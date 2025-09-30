@@ -1,0 +1,17 @@
+{
+    "name": "negroni/derrumbe.net",
+    "autoload": {
+        "psr-4": {
+            "Negroni\\DerrumbeNet\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Negroni1",
+            "email": "negronialanis2@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
