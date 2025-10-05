@@ -1,3 +1,6 @@
+.htaccess
+index.php
 .idea
 .env
 /vendor/
+*swp
