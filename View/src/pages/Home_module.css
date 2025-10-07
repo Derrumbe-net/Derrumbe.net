@@ -1,0 +1,356 @@
+.landing {
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  color: #000;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  position: relative;
+  height: 300px;
+  margin-top: -80px;
+  overflow: hidden;
+  width: 99.9vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.hero__background {
+  background-image: url('/assets/landing-hero.webp'); 
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65); /* ↓ exposure */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1rem 5rem;
+}
+
+.hero__title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+  max-width: 800px;
+  line-height: 1.4;
+  margin-top: 5rem;
+  margin-bottom: 1.5rem;
+  z-index: 2;
+}
+
+.hero__buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 2;
+}
+
+.btn.btn--contact {
+  background-color: #3B7D23;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn.btn--outline {
+  background: transparent;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.hero__logo {
+  position: absolute;
+  bottom: -40px; /* half inside, half outside */
+  left: 50%;
+  transform: translateX(-50%);
+  height: 72px;
+  z-index: 3;
+}
+
+
+/* ===== SECTION WRAPPER ===== */
+.landing__section {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 96vw;
+}
+
+/* ===== MAPA INTERACTIVO SECTION ===== */
+.landing__map {
+  width: 94.6%;
+  margin-left: calc(-1 * (100vw - 100%)/2); /* Center inside container */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  background-color: #DFE8DA;
+  padding: 3rem 4rem;
+  position: relative;
+  border-radius: 0; /* remove rounded corners */
+  margin-top: 0; /* remove spacing so logo overlays cleanly */
+}
+
+.landing__map-logo {
+  position: absolute;
+  top: -30px; /* overlaps the section above */
+  left: 50%;
+  transform: translateX(-50%);
+  height: 72px;
+  z-index: 5;
+}
+
+.landing__map-text {
+  flex: 1;
+  min-width: 500px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 35px;
+}
+
+.landing__map-text h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.landing__map-text p {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.landing__map-link {
+  font-weight: 600;
+  font-size: 14px;
+  color: black;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.landing__map-link .arrow {
+  font-size: 1.2rem;
+  transform: translateY(1px);
+}
+
+.landing__map-image {
+  max-width: 480px;
+  width: 100%;
+  align-self: flex-end;
+  left: -30px;
+}
+
+/* ===== REPORT SECTION ===== */
+.landing__report {
+  display: flex;
+  align-items: stretch; /* Match heights of both sides */
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background-color: #A4BC9B;
+  width: 96vw;
+  margin-left: calc(-1 * (100vw - 100%) / 2); /* center inside container */
+  padding-left: 50px;
+}
+
+.landing__report-text {
+  flex: 1;
+  min-width: 300px;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem; /* Add padding here instead of on the full section */
+}
+
+.landing__report-image-wrapper {
+  flex: 1;
+  max-width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.landing__report-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.landing__report-text h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  margin-top: -0.5rem;
+}
+
+.landing__report-text p {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.btn.btn--black {
+  background: transparent;
+  border: 2px solid black;
+  color: black;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  font-size: 14px;
+  border-radius: 4px;
+  text-decoration: none;
+  width: fit-content;
+  transition: all 0.2s ease-in-out;
+}
+
+
+/* ===== FEATURED NEWS SECTION ===== */
+.landing__featured-news {
+  background-color: #DFE8DA;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -30px;
+  margin-right: -30px;
+  align-items: center;
+  padding-left: 0%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.landing__featured-news-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+}
+
+.landing__featured-news-image {
+  width: 100%;
+  max-width: 600px;
+  object-fit: cover;
+}
+
+.landing__featured-news-text {
+  flex: 1;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing__featured-news-text h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.landing__featured-news-text h3 {
+  font-size: 1.2rem;
+  font-weight: 550;
+  margin: 0;
+}
+
+.landing__featured-news-date {
+  font-weight: 300;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.landing__featured-news-text p {
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0.5;
+}
+
+.landing__featured-news-logo {
+  max-width: 220px;
+}
+
+
+/* ===== CONTACT SECTION ===== */
+.landing__contact {
+  background-color: #DFE8DA;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 97.4vw;
+  margin-left: -30px;
+  padding-right: 30.5px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.landing__contact-text {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  padding-left: 100px;
+}
+
+.landing__contact-text h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.landing__contact-text hr {
+  border: none;
+  border-top: 2px solid black;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.landing__contact-text p {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.landing__contact-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.landing__contact-image {
+  width: 25rem;
+  height: 100%;
+  object-fit: cover;
+  padding-right: 70px;
+}
+
+

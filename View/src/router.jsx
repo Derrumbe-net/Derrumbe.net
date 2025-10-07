@@ -10,6 +10,7 @@ import Projects from './pages/Projects';
 import Publications from './pages/Publications';
 import RainForecast from './pages/RainForecast';
 import Report from './pages/Report';
+import Request from './pages/Request'
 import Stations from './pages/Stations';
 import SusceptibilityMap from './pages/SusceptibilityMap';
 
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: 'guia-deslizamientos', element: <Guide /> },
       { path: 'mapa-susceptibilidad', element: <SusceptibilityMap /> },
       { path: 'reportar', element: <Report /> },
+      { path: 'solicitud', element: <Request />},
       { path: 'landslideready-pr', element: <LandslideReadyPR /> },
     ],
   },
