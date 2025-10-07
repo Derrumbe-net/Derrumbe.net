@@ -28,8 +28,8 @@ class Admin {
     // READ BY ID
     public function getAdminById($id) {
         try {
-            $stmt = $this->conn->prepare("SELECT * FROM admin WHERE id = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt = $this->conn->prepare("SELECT * FROM admin WHERE admin_id = :admin_id");
+            $stmt->bindParam(':admin_id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -95,11 +95,8 @@ class Admin {
     // UPDATE PASSWORD
     public function updatePassword($id, $password) {
         try {
-            // Hash password before storing for security
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
             $stmt = $this->conn->prepare("UPDATE admin SET password = :password WHERE id = :id");
-            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $password, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             return $stmt->execute();
