@@ -9,11 +9,14 @@ class Admin {
     }
 
     // CREATE
-    public function createAdmin($name, $email) {
+    public function createAdmin($email, $password) {
         try {
-            $stmt = $this->conn->prepare("INSERT INTO admin (name, email) VALUES (:name, :email)");
-            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            // Hash password before storing for security
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $stmt = $this->conn->prepare("INSERT INTO admin (email, password) VALUES (:email, :password)");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
                 return $this->conn->lastInsertId(); // Return new admin ID
@@ -28,7 +31,7 @@ class Admin {
     // READ BY ID
     public function getAdminById($id) {
         try {
-            $stmt = $this->conn->prepare("SELECT * FROM admin WHERE id = :id");
+            $stmt = $this->conn->prepare("SELECT * FROM admin WHERE admin_id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -53,7 +56,7 @@ class Admin {
     // GET EMAIL BY ID
     public function getEmailById($id) {
         try {
-            $stmt = $this->conn->prepare("SELECT email FROM admin WHERE id = :id");
+            $stmt = $this->conn->prepare("SELECT email FROM admin WHERE admin_id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -67,7 +70,7 @@ class Admin {
         // GET PASSWORD BY ID
     public function getPasswordById($id) {
         try {
-            $stmt = $this->conn->prepare("SELECT password FROM admin WHERE id = :id");
+            $stmt = $this->conn->prepare("SELECT password FROM admin WHERE admin_id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -81,7 +84,7 @@ class Admin {
     // UPDATE EMAIL
     public function updateEmail($id, $email) {
         try {
-            $stmt = $this->conn->prepare("UPDATE admin SET email = :email WHERE id = :id");
+            $stmt = $this->conn->prepare("UPDATE admin SET email = :email WHERE admin_id = :id");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
@@ -98,7 +101,7 @@ class Admin {
             // Hash password before storing for security
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $this->conn->prepare("UPDATE admin SET password = :password WHERE id = :id");
+            $stmt = $this->conn->prepare("UPDATE admin SET password = :password WHERE admin_id = :id");
             $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
@@ -112,7 +115,7 @@ class Admin {
     // DELETE BY ID
     public function deleteAdminById($id) {
         try {
-            $stmt = $this->conn->prepare("DELETE FROM admin WHERE id = :id");
+            $stmt = $this->conn->prepare("DELETE FROM admin WHERE admin_id = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
             return $stmt->execute();
