@@ -11,6 +11,9 @@ $app->addBodyParsingMiddleware();
 // Database connection
 $db = Database::getConnection();
 
+$basePath = rtrim(str_ireplace('index.php', '', $_SERVER['SCRIPT_NAME']), '/');
+$app->setBasePath($basePath);
+
 // Load routes
 (require __DIR__ . '/./Route/AdminRoutes.php')($app, $db);
 (require __DIR__ . '/./Route/LandslideRoutes.php')($app, $db);
