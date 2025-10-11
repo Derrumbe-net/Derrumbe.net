@@ -2,7 +2,9 @@
 class Report {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
-
+    
+    // CREATE REPORT
+    // TODO use bind param
     public function createReport($data){
         try{
             $stmt = $this->conn->prepare(
@@ -29,18 +31,21 @@ class Report {
             return $this->conn->lastInsertId();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // GET REPORT BY ID
     public function getReportById($id){
         $stmt = $this->conn->prepare("SELECT * FROM report WHERE report_id=:id");
         $stmt->execute([':id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    
+    // GET ALL REPORTS
     public function getAllReports(){
         $stmt = $this->conn->query("SELECT * FROM report");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
+    // UPDATE REPORT BY ID
     public function updateReport($id,$data){
         try{
             $stmt = $this->conn->prepare(
@@ -65,7 +70,8 @@ class Report {
             ]);
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // DELETE REPORT BY ID
     public function deleteReport($id){
         $stmt = $this->conn->prepare("DELETE FROM report WHERE report_id=:id");
         return $stmt->execute([':id'=>$id]);

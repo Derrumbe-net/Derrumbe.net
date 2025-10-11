@@ -3,6 +3,8 @@ class Project {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
 
+    // CREATE PROJECT
+    // TODO Modify to use bind param
     public function createProject($data){
         try{
             $stmt = $this->conn->prepare(
@@ -21,18 +23,24 @@ class Project {
             return $this->conn->lastInsertId();
         } catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // GET PROJECT ID
     public function getProjectById($id){
         $stmt=$this->conn->prepare("SELECT * FROM project WHERE project_id=:id");
         $stmt->execute([':id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // GET PROJECT BY STATUS
+    // TODO 
+
+    // GET ALL PROJECT
     public function getAllProjects(){
         $stmt = $this->conn->query("SELECT * FROM project");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // UPDATE PROJECT BY ID
     public function updateProject($id,$data){
         try{
             $stmt = $this->conn->prepare(
@@ -52,7 +60,8 @@ class Project {
             ]);
         } catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // DELETE PROJECT BY ID
     public function deleteProject($id){
         $stmt=$this->conn->prepare("DELETE FROM project WHERE project_id=:id");
         return $stmt->execute([':id'=>$id]);

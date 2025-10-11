@@ -2,7 +2,9 @@
 class StationInfo {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
-
+    
+    // CREATE STATION INFO
+    // TODO bind param
     public function createStationInfo($data){
         try{
             $stmt = $this->conn->prepare(
@@ -28,18 +30,21 @@ class StationInfo {
             return $this->conn->lastInsertId();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // GET STATION INFO BY ID
     public function getStationInfoById($id){
         $stmt=$this->conn->prepare("SELECT * FROM station_info WHERE station_id=:id");
         $stmt->execute([':id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    
+    // GET ALL STATIONS INFO
     public function getAllStationInfos(){
         $stmt=$this->conn->query("SELECT * FROM station_info");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
+    // UPDATE STATION INFO BY ID
     public function updateStationInfo($id,$data){
         try{
             $stmt=$this->conn->prepare(
@@ -63,7 +68,8 @@ class StationInfo {
             ]);
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
-
+    
+    // DELETE STATION BY ID
     public function deleteStationInfo($id){
         $stmt=$this->conn->prepare("DELETE FROM station_info WHERE station_id=:id");
         return $stmt->execute([':id'=>$id]);

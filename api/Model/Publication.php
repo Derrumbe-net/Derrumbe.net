@@ -3,6 +3,8 @@ class Publication {
     private $conn;
     public function __construct($conn) { $this->conn = $conn; }
 
+    // CREATE PUBLICATION
+    // TODO use bind param
     public function createPublication($data) {
         try {
             $stmt = $this->conn->prepare(
@@ -19,18 +21,21 @@ class Publication {
             return $this->conn->lastInsertId();
         } catch(PDOException $e) { error_log($e->getMessage()); return false; }
     }
-
+    
+    // GET PUBLICATION BY ID
     public function getPublicationById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM publication WHERE publication_id=:id");
         $stmt->execute([':id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    
+    // GET ALL PUBLICATIONS
     public function getAllPublications() {
         $stmt = $this->conn->query("SELECT * FROM publication");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
+    // UPDATE PUBLICATION
     public function updatePublication($id, $data) {
         try {
             $stmt = $this->conn->prepare(
@@ -47,7 +52,8 @@ class Publication {
             ]);
         } catch(PDOException $e) { error_log($e->getMessage()); return false; }
     }
-
+    
+    // DELETE PUBLICATION BY ID
     public function deletePublication($id) {
         $stmt = $this->conn->prepare("DELETE FROM publication WHERE publication_id=:id");
         return $stmt->execute([':id'=>$id]);
