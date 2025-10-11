@@ -12,7 +12,7 @@ class Landslide {
                  VALUES (:admin_id, :landslide_date, :latitude, :longitude)"
             );
 
-            $stmt->bindParam(':admin_id', $data['admin_id'], PDO::PARAM_ID);
+            $stmt->bindParam(':admin_id', $data['admin_id'], PDO::PARAM_INT);
             $stmt->bindParam(':landslide_date', $data['landslide_date'], PDO::PARAM_STR);
             $stmt->bindParam(':latitude', $data['latitude'], PDO::PARAM_STR);
             $stmt->bindParam(':longitude', $data['longitude'], PDO::PARAM_STR);
@@ -31,7 +31,8 @@ class Landslide {
     // GET LANSLIDE BY ID
     public function getLandslideById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM landslide WHERE landslide_id = :id");
-        $stmt->execute([':id'=>$id]);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -48,13 +49,14 @@ class Landslide {
                 "UPDATE landslide SET admin_id=:admin_id, landslide_date=:landslide_date,
                  latitude=:latitude, longitude=:longitude WHERE landslide_id=:id"
             );
-            return $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':landslide_date'=>$data['landslide_date'],
-                ':latitude'=>$data['latitude'],
-                ':longitude'=>$data['longitude'],
-                ':id'=>$id
-            ]);
+
+            $stmt->bindParam(':admin_id', $data['admin_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':landslide_date', $data['landslide_date'], PDO::PARAM_STR);
+            $stmt->bindParam(':latitude', $data['latitude'], PDO::PARAM_STR);
+            $stmt->bindParam(':longitude', $data['longitude'], PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            return $stmt->execute();
         } catch (PDOException $e) { error_log($e->getMessage()); return false; }
     }
     
@@ -62,7 +64,8 @@ class Landslide {
     public function deleteLandslide($id) {
         try {
             $stmt = $this->conn->prepare("DELETE FROM landslide WHERE landslide_id=:id");
-            return $stmt->execute([':id'=>$id]);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
         } catch (PDOException $e) { error_log($e->getMessage()); return false; }
     }
 }
