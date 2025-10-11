@@ -4,7 +4,6 @@ class StationInfo {
     public function __construct($conn){ $this->conn = $conn; }
     
     // CREATE STATION INFO
-    // TODO bind param
     public function createStationInfo($data){
         try{
             $stmt = $this->conn->prepare(
@@ -12,21 +11,20 @@ class StationInfo {
                 (admin_id, soil_saturation, precipitation, sensor_image_url, data_image_url, city,
                  is_available, last_updated, latitude, longitude)
                  VALUES
-                (:admin_id,:soil_saturation,:precipitation,:sensor_image_url,:data_image_url,:city,
-                 :is_available,:last_updated,:latitude,:longitude)"
+                (:admin_id, :soil_saturation, :precipitation, :sensor_image_url, :data_image_url, :city,
+                 :is_available, :last_updated, :latitude, :longitude)"
             );
-            $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':soil_saturation'=>$data['soil_saturation'],
-                ':precipitation'=>$data['precipitation'] ?? null,
-                ':sensor_image_url'=>$data['sensor_image_url'] ?? null,
-                ':data_image_url'=>$data['data_image_url'] ?? null,
-                ':city'=>$data['city'] ?? null,
-                ':is_available'=>$data['is_available'] ?? 0,
-                ':last_updated'=>$data['last_updated'] ?? null,
-                ':latitude'=>$data['latitude'] ?? null,
-                ':longitude'=>$data['longitude'] ?? null
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':soil_saturation', $data['soil_saturation']);
+            $stmt->bindParam(':precipitation', $data['precipitation']);
+            $stmt->bindParam(':sensor_image_url', $data['sensor_image_url']);
+            $stmt->bindParam(':data_image_url', $data['data_image_url']);
+            $stmt->bindParam(':city', $data['city']);
+            $stmt->bindParam(':is_available', $data['is_available']);
+            $stmt->bindParam(':last_updated', $data['last_updated']);
+            $stmt->bindParam(':latitude', $data['latitude']);
+            $stmt->bindParam(':longitude', $data['longitude']);
+            $stmt->execute();
             return $this->conn->lastInsertId();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
@@ -53,19 +51,18 @@ class StationInfo {
                  city=:city,is_available=:is_available,last_updated=:last_updated,
                  latitude=:latitude,longitude=:longitude WHERE station_id=:id"
             );
-            return $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':soil_saturation'=>$data['soil_saturation'],
-                ':precipitation'=>$data['precipitation'] ?? null,
-                ':sensor_image_url'=>$data['sensor_image_url'] ?? null,
-                ':data_image_url'=>$data['data_image_url'] ?? null,
-                ':city'=>$data['city'] ?? null,
-                ':is_available'=>$data['is_available'] ?? 0,
-                ':last_updated'=>$data['last_updated'] ?? null,
-                ':latitude'=>$data['latitude'] ?? null,
-                ':longitude'=>$data['longitude'] ?? null,
-                ':id'=>$id
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':soil_saturation', $data['soil_saturation']);
+            $stmt->bindParam(':precipitation', $data['precipitation']);
+            $stmt->bindParam(':sensor_image_url', $data['sensor_image_url']);
+            $stmt->bindParam(':data_image_url', $data['data_image_url']);
+            $stmt->bindParam(':city', $data['city']);
+            $stmt->bindParam(':is_available', $data['is_available']);
+            $stmt->bindParam(':last_updated', $data['last_updated']);
+            $stmt->bindParam(':latitude', $data['latitude']);
+            $stmt->bindParam(':longitude', $data['longitude']);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     

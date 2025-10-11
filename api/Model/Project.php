@@ -4,22 +4,20 @@ class Project {
     public function __construct($conn){ $this->conn = $conn; }
 
     // CREATE PROJECT
-    // TODO Modify to use bind param
     public function createProject($data){
         try{
             $stmt = $this->conn->prepare(
                 "INSERT INTO project (admin_id, title, start_year, end_year, project_status, description, image_url)
-                 VALUES (:admin_id,:title,:start_year,:end_year,:project_status,:description,:image_url)"
+                 VALUES (:admin_id, :title, :start_year, :end_year, :project_status, :description, :image_url)"
             );
-            $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':title'=>$data['title'],
-                ':start_year'=>$data['start_year'] ?? null,
-                ':end_year'=>$data['end_year'] ?? null,
-                ':project_status'=>$data['project_status'] ?? null,
-                ':description'=>$data['description'] ?? null,
-                ':image_url'=>$data['image_url'] ?? null
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':title', $data['title']);
+            $stmt->bindParam(':start_year', $data['start_year']);
+            $stmt->bindParam(':end_year', $data['end_year']);
+            $stmt->bindParam(':project_status', $data['project_status']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->execute();
             return $this->conn->lastInsertId();
         } catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
@@ -32,7 +30,11 @@ class Project {
     }
 
     // GET PROJECT BY STATUS
-    // TODO 
+    public function getProjectsByStatus($status){
+        $stmt = $this->conn->prepare("SELECT * FROM project WHERE project_status = :status");
+        $stmt->execute([':status' => $status]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // GET ALL PROJECT
     public function getAllProjects(){
@@ -48,16 +50,15 @@ class Project {
                  end_year=:end_year,project_status=:project_status,description=:description,image_url=:image_url
                  WHERE project_id=:id"
             );
-            return $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':title'=>$data['title'],
-                ':start_year'=>$data['start_year'] ?? null,
-                ':end_year'=>$data['end_year'] ?? null,
-                ':project_status'=>$data['project_status'] ?? null,
-                ':description'=>$data['description'] ?? null,
-                ':image_url'=>$data['image_url'] ?? null,
-                ':id'=>$id
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':title', $data['title']);
+            $stmt->bindParam(':start_year', $data['start_year']);
+            $stmt->bindParam(':end_year', $data['end_year']);
+            $stmt->bindParam(':project_status', $data['project_status']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
         } catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     

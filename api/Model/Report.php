@@ -4,7 +4,6 @@ class Report {
     public function __construct($conn){ $this->conn = $conn; }
     
     // CREATE REPORT
-    // TODO use bind param
     public function createReport($data){
         try{
             $stmt = $this->conn->prepare(
@@ -12,22 +11,21 @@ class Report {
                 (landslide_id, reported_at, description, city, image_url, latitude, longitude,
                  reporter_name, reporter_phone, reporter_email, physical_address)
                  VALUES
-                (:landslide_id,:reported_at,:description,:city,:image_url,:latitude,:longitude,
-                 :reporter_name,:reporter_phone,:reporter_email,:physical_address)"
+                (:landslide_id, :reported_at, :description, :city, :image_url, :latitude, :longitude,
+                 :reporter_name, :reporter_phone, :reporter_email, :physical_address)"
             );
-            $stmt->execute([
-                ':landslide_id'=>$data['landslide_id'],
-                ':reported_at'=>$data['reported_at'] ?? null,
-                ':description'=>$data['description'] ?? null,
-                ':city'=>$data['city'] ?? null,
-                ':image_url'=>$data['image_url'] ?? null,
-                ':latitude'=>$data['latitude'] ?? null,
-                ':longitude'=>$data['longitude'] ?? null,
-                ':reporter_name'=>$data['reporter_name'] ?? null,
-                ':reporter_phone'=>$data['reporter_phone'] ?? null,
-                ':reporter_email'=>$data['reporter_email'] ?? null,
-                ':physical_address'=>$data['physical_address'] ?? null
-            ]);
+            $stmt->bindParam(':landslide_id', $data['landslide_id']);
+            $stmt->bindParam(':reported_at', $data['reported_at']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':city', $data['city']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->bindParam(':latitude', $data['latitude']);
+            $stmt->bindParam(':longitude', $data['longitude']);
+            $stmt->bindParam(':reporter_name', $data['reporter_name']);
+            $stmt->bindParam(':reporter_phone', $data['reporter_phone']);
+            $stmt->bindParam(':reporter_email', $data['reporter_email']);
+            $stmt->bindParam(':physical_address', $data['physical_address']);
+            $stmt->execute();
             return $this->conn->lastInsertId();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
@@ -54,20 +52,19 @@ class Report {
                  reporter_name=:reporter_name,reporter_phone=:reporter_phone,reporter_email=:reporter_email,
                  physical_address=:physical_address WHERE report_id=:id"
             );
-            return $stmt->execute([
-                ':landslide_id'=>$data['landslide_id'],
-                ':reported_at'=>$data['reported_at'] ?? null,
-                ':description'=>$data['description'] ?? null,
-                ':city'=>$data['city'] ?? null,
-                ':image_url'=>$data['image_url'] ?? null,
-                ':latitude'=>$data['latitude'] ?? null,
-                ':longitude'=>$data['longitude'] ?? null,
-                ':reporter_name'=>$data['reporter_name'] ?? null,
-                ':reporter_phone'=>$data['reporter_phone'] ?? null,
-                ':reporter_email'=>$data['reporter_email'] ?? null,
-                ':physical_address'=>$data['physical_address'] ?? null,
-                ':id'=>$id
-            ]);
+            $stmt->bindParam(':landslide_id', $data['landslide_id']);
+            $stmt->bindParam(':reported_at', $data['reported_at']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':city', $data['city']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->bindParam(':latitude', $data['latitude']);
+            $stmt->bindParam(':longitude', $data['longitude']);
+            $stmt->bindParam(':reporter_name', $data['reporter_name']);
+            $stmt->bindParam(':reporter_phone', $data['reporter_phone']);
+            $stmt->bindParam(':reporter_email', $data['reporter_email']);
+            $stmt->bindParam(':physical_address', $data['physical_address']);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     

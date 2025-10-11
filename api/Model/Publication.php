@@ -4,20 +4,18 @@ class Publication {
     public function __construct($conn) { $this->conn = $conn; }
 
     // CREATE PUBLICATION
-    // TODO use bind param
     public function createPublication($data) {
         try {
             $stmt = $this->conn->prepare(
                 "INSERT INTO publication (admin_id, title, publication_url, image_url, description)
                  VALUES (:admin_id, :title, :publication_url, :image_url, :description)"
             );
-            $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':title'=>$data['title'],
-                ':publication_url'=>$data['publication_url'],
-                ':image_url'=>$data['image_url'] ?? null,
-                ':description'=>$data['description'] ?? null
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':title', $data['title']);
+            $stmt->bindParam(':publication_url', $data['publication_url']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->execute();
             return $this->conn->lastInsertId();
         } catch(PDOException $e) { error_log($e->getMessage()); return false; }
     }
@@ -42,14 +40,13 @@ class Publication {
                 "UPDATE publication SET admin_id=:admin_id, title=:title, publication_url=:publication_url,
                  image_url=:image_url, description=:description WHERE publication_id=:id"
             );
-            return $stmt->execute([
-                ':admin_id'=>$data['admin_id'],
-                ':title'=>$data['title'],
-                ':publication_url'=>$data['publication_url'],
-                ':image_url'=>$data['image_url'] ?? null,
-                ':description'=>$data['description'] ?? null,
-                ':id'=>$id
-            ]);
+            $stmt->bindParam(':admin_id', $data['admin_id']);
+            $stmt->bindParam(':title', $data['title']);
+            $stmt->bindParam(':publication_url', $data['publication_url']);
+            $stmt->bindParam(':image_url', $data['image_url']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
         } catch(PDOException $e) { error_log($e->getMessage()); return false; }
     }
     
