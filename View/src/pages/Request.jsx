@@ -24,7 +24,6 @@ export default function EducationalTalkRequest() {
     <section className="request-page">
       <div className="request__header">
         <div className="request__image-wrapper">
-          <div className="request__image-bg" />
           <img
             src={educationalTalk}
             alt="Charla educativa en escuela"

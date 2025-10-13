@@ -33,7 +33,7 @@ function About() {
         </div>
       </div>
 
-      <div className="directory__title">Directorio de Oficina</div>
+      <div className="directory__title">Directorio de Oficina</div> 
       <h2 className="directory__subtitle">Facultad</h2>
 
       <div className="directory__profiles">

@@ -3,17 +3,27 @@
   padding: 3rem 2rem;
   font-family: 'Inter', sans-serif;
   text-align: justify;
-  width: 94.9vw;
-  margin-top: -80px;
+  width: 100%;
   margin-left: calc(-1 * (100vw - 100%) / 2);
+  position: relative;
+}
+
+/* ===== HEADER ===== */
+.guide__content {
+  width: 100%;
+  max-width: 1200px; /* keeps alignment consistent */
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  text-align: center; /* Centers titles */
 }
 
 .guide h1 {
   font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  padding-top: 5%;
-  margin-left: 70px;
+  line-height: 1.6;
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  text-align: justify;
 }
 
 .guide p {
@@ -21,7 +31,7 @@
   line-height: 1.6;
   max-width: 900px;
   margin: 0 auto 1rem;
-  margin-left: 70px;
+  text-align: justify;
 }
 
 .guide a {
@@ -31,17 +41,24 @@
   margin: 0 auto 1rem;
   color: black;
   font-weight: bold;
+  display: inline-block;
+  text-align: center;
 }
 
+/* ===== BACKGROUND IMAGE (WATERMARK) ===== */
 .guide__landslide-bg {
-  opacity: 0.1;
+  position: absolute;           /* ✅ was fixed — now tied to the header */
+  top: 50px;                   /* ✅ slightly adjusted for balance */
+  left: 50%;                    /* ✅ center horizontally */
+  transform: translateX(36%);  /* ✅ perfect centering */
+  width: 450px;                 /* ✅ slightly larger for visual balance */
+  height: auto;
+  opacity: 0.08;                /* ✅ softened opacity */
+  z-index: 0;
   pointer-events: none;
-  padding-left: 64%;
-  padding-top: 1%;
-  position: absolute;
-  max-height: 450px;
 }
 
+/* ===== FLIPBOOK ===== */
 .guide__flipbook-container {
   display: flex;
   justify-content: center;
@@ -65,8 +82,6 @@
   height: 100%;
   object-fit: cover;
 }
-
-
 
 /* ===== EXTRA INFO SECTION ===== */
 .landslide__extra-info {
@@ -97,7 +112,6 @@
   padding: 2rem;
   max-width: 500px;
   margin: 0 auto;
-
 }
 
 .landslide__card:hover {
@@ -155,7 +169,7 @@
 }
 
 .slick-dots {
-  bottom: -30px;
+  bottom: 30px;
 }
 
 .slick-dots li button:before {
@@ -163,7 +177,8 @@
   font-size: 10px;
 }
 
-.slick-prev:before, .slick-next:before {
+.slick-prev:before,
+.slick-next:before {
   color: #3B7D23;
   font-size: 24px;
 }
@@ -171,7 +186,6 @@
 /* ===== VIDEO SECTION ===== */
 .landslide__videos {
   background-color: #DFE8DA;
-  padding: 3rem 2rem 5rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
 }
@@ -201,7 +215,7 @@
   padding-bottom: 56.25%;
   overflow: hidden;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: #000;
 }
 

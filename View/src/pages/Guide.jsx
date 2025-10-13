@@ -129,14 +129,7 @@ function Guide() {
           {/* Spanish Version */}
           <div className="landslide__video-card">
             <div className="landslide__video-container">
-              <iframe
-                src="https://www.youtube.com/embed/2dS2Sisj4GQ?list=TLGGWPCCbU4ANB0wNjEwMjAyNQ"
-                title="Animación de un deslizamiento de tierra (versión en español)"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/2dS2Sisj4GQ?si=Wiu9Rr6NXIPaayEt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
             <p>Versión en español</p>
           </div>
@@ -144,14 +137,7 @@ function Guide() {
           {/* English Version */}
           <div className="landslide__video-card">
             <div className="landslide__video-container">
-              <iframe
-                src="https://www.youtube.com/embed/lbHGOz3WXgw?list=TLGGqHxqnm0bgKUwNjEwMjAyNQ"
-                title="Landslide Animation (English version)"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/lbHGOz3WXgw?si=me9p18wwXhpuatWI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
             <p>English Version</p>
           </div>
