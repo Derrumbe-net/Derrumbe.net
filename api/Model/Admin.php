@@ -67,7 +67,7 @@ class Admin {
         }
     }
 
-        // GET PASSWORD BY ID
+    // GET PASSWORD BY ID
     public function getPasswordById($id) {
         try {
             $stmt = $this->conn->prepare("SELECT password FROM admin WHERE admin_id = :id");
@@ -125,4 +125,3 @@ class Admin {
         }
     }
 }
-
