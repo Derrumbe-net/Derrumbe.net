@@ -34,9 +34,7 @@ jobs:
       - name: Prepare Deployment Directory
         run: |
           mkdir deploy_staging
-          # Copy frontend build artifacts from View/dist/
           cp -r ./View/dist/* ./deploy_staging/
-          # Copy backend files and the 'api' folder from the root
           cp composer.json composer.lock .htaccess ./deploy_staging/
           cp -r api ./deploy_staging/
 
@@ -45,5 +43,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: deploy
-          publish_dir: ./View/dist
+          publish_dir: ./deploy_staging
           force_orphan: true
