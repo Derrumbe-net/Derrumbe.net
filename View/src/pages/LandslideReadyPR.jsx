@@ -51,7 +51,7 @@ function LandslideReadyPR() {
       </div>
 
 
-      <h2 className="not-bold">LandslideReady para Individuos</h2>
+      <h2 className="landslideReady__individuos-header">LandslideReady para Individuos</h2>
       <div className="landslideReady__individuos-section">
         <div className="landslideReady__individuos-text">
           <p>

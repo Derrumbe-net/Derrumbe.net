@@ -29,11 +29,11 @@ function Home() {
 
       {/* SECTION: MAPA */}
       <section className="landing__map"> 
-        <img
+        {/* <img
           src={logo}
           alt="PRLHMO Logo"
           className="landing__map-logo"
-        />
+        /> */}
 
         <div className="landing__map-text">
           <h2>Mapa Interactivo de Monitoreo de Deslizamientos</h2>
@@ -41,7 +41,7 @@ function Home() {
             Herramienta interactiva que muestra, en tiempo real, datos de saturación del suelo, 
             susceptibilidad a deslizamientos y estimaciones de precipitación en Puerto Rico.
           </p>
-          <a href="/mapa-interactivo" className="landing__map-link">
+          <a className="landing__map-link">
             ¡Haz clic en el mapa! <span className="arrow">→</span>
           </a>
         </div>
@@ -52,7 +52,7 @@ function Home() {
           alt="Mapa interactivo"
           loading="lazy"
         />
-      </section>
+      </section> 
 
 
       {/* SECTION: REPORTAR */}
@@ -63,7 +63,7 @@ function Home() {
             Ayúdanos a mejorar el monitoreo reportando deslizamientos que observes
             en tu área. Tu apoyo puede brindar ayuda para la comunidad.
           </p>
-          <a href="/reportar" className="btn btn--black">
+          <a href="/reportar" className="btn--black">
             ¡Haz tu Reporte!
           </a>
         </div>
