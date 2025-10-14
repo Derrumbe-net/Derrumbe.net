@@ -1,11 +1,12 @@
 name: Build and Deploy Demo
 
-# This workflow runs on any push to the 'demo' branch
 on:
   push:
     branches: [ "demo" ]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -28,6 +29,10 @@ jobs:
 
       - name: Build Project
         run: npm run build
+        working-directory: ./View
+
+      - name: List Files in View Directory
+        run: ls -R
         working-directory: ./View
 
       - name: Deploy to 'deploy' Branch
