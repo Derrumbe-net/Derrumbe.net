@@ -1,6 +1,0 @@
-.htaccess
-.idea
-.env
-/vendor/
-*swp
-shell.nix

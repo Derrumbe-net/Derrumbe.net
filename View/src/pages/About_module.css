@@ -1,0 +1,205 @@
+/* ===== MAIN SECTION ===== */
+
+.about {
+  background-color: #DFE8DA;
+  padding: 3rem 2rem;
+  width: 94.9vw;            /* Full width of viewport */
+  margin-left: calc(-1 * (100vw - 100%) / 2); /* Center-align when inside constrained containers */
+  margin-top: -80px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.about__content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  gap: 2rem;
+  padding-top: 5%;
+}
+
+.about__image-wrapper {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+}
+
+.about__image {
+  width: 700px;
+  height: 300px;
+  object-fit: contain;
+  margin-left: 30px;
+}
+
+.about__text-block {
+  flex: 1;
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+}
+
+.about__logo-bg {
+  position: absolute;
+  top: 24%;
+  right: -50%;
+  width: 100%;
+  max-width: 600px;
+  height: 250px;
+  opacity: 0.1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about__title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.about__description {
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+
+/* ===== DIRECTORY SECTION ===== */
+
+.directory__title {
+  background-color: #3B7D23;
+  color: #DFE8DA;
+  padding: 1rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-left: calc(-1 * (100vw - 100%) / 2);
+  margin-top: 4%;
+  width: 100vw;
+}
+
+.directory__subtitle {
+  font-size: 2.2rem;
+  font-weight: lighter;
+  margin: 4rem auto 1rem auto;
+  position: relative;
+  text-align: center;
+}
+
+.directory__subtitle::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background-color: black;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.directory__profiles {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8rem;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
+}
+
+.directory__card {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.directory__card img.profile {
+  width: 100%;
+  height: auto;
+  border-radius: 4px 4px 0 0;
+}
+
+.directory__person-info {
+  align-items: center;
+  text-align: center;
+}
+
+.directory__person-info strong {
+  font-size: 20px;
+}
+
+.directory__person-info p {
+  margin-top: 1%;
+}
+
+.directory__info {
+  padding: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
+
+.directory__linkedin {
+  display: flex;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.directory__linkedin-box {
+  background-color: #3B7D23;
+  width: 60px;
+  height: 60px;
+  margin-top: -18%;
+  margin-left: -12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+}
+
+.directory__linkedin-box img {
+  width: 50px;
+  height: 50px;
+}
+
+.directory__groups {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.directory__group h3 {
+  font-size: 2.2rem;
+  font-weight: lighter;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.directory__group h3::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background-color: black;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.directory__group ul {
+  list-style: none;
+  padding: 0;
+}
+
+.directory__group li {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}

@@ -1,0 +1,47 @@
+name: Build and Deploy Demo
+
+on:
+  push:
+    branches: [ "demo" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: View/package-lock.json
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./View
+
+      - name: Build Project
+        run: npm run build
+        working-directory: ./View
+
+      - name: Prepare Deployment Directory
+        run: |
+          mkdir deploy_staging
+          cp -r ./View/dist/* ./deploy_staging/
+          cp composer.json composer.lock .htaccess ./deploy_staging/
+          cp -r api ./deploy_staging/
+
+      - name: Deploy to 'deploy' Branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy
+          publish_dir: ./deploy_staging
+          force_orphan: true

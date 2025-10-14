@@ -41,7 +41,7 @@ class Landslide {
         $stmt = $this->conn->query("SELECT * FROM landslide");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     // UPDATE LANDSLIDE BY ID
     public function updateLandslide($id, $data) {
         try {
