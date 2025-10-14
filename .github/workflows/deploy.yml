@@ -31,9 +31,14 @@ jobs:
         run: npm run build
         working-directory: ./View
 
-      - name: List Files in View Directory
-        run: ls -R
-        working-directory: ./View
+      - name: Prepare Deployment Directory
+        run: |
+          mkdir deploy_staging
+          # Copy frontend build artifacts from View/dist/
+          cp -r ./View/dist/* ./deploy_staging/
+          # Copy backend files and the 'api' folder from the root
+          cp composer.json composer.lock .htaccess ./deploy_staging/
+          cp -r api ./deploy_staging/
 
       - name: Deploy to 'deploy' Branch
         uses: peaceiris/actions-gh-pages@v3
