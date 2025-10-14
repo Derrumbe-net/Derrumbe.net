@@ -49,7 +49,7 @@ function About() {
               </div>
             </div> 
             <div className="directory__person-info" > 
-              <strong>Sthephen Hughes</strong>
+              <strong>Stephen Hughes</strong>
               <p>Coordinator and PI</p>
               <p>
                 kenneth.hughes@upr.edu <br />
