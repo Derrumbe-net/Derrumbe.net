@@ -46,11 +46,11 @@ main { position: relative; height: 100vh; width: 100%; }
 .logo-container {
   position: absolute;
   /* Bring the logo on top of the map */
-  z-index: 1000; 
+  z-index: 1000;
   /* Place it in the bottom right corner */
   bottom: 20px; /* Adjust as needed for spacing from the bottom */
   right: 20px;  /* Adjust as needed for spacing from the right */
-  
+
   /* Add padding/margin/border for better visibility if necessary */
   padding: 5px;
   background-color: white; /* Optional: for better contrast */
@@ -63,7 +63,7 @@ main { position: relative; height: 100vh; width: 100%; }
   display: block;
 }
 
-  
+
 /* Styling for the custom DivIcon marker */
 .saturation-marker {
   display: flex;
@@ -72,8 +72,8 @@ main { position: relative; height: 100vh; width: 100%; }
   width: 55px; /* Adjust width */
   height: 30px; /* Adjust height */
   /* Remove border-radius for rectangular shape */
-  border-radius: 0; 
-  
+  border-radius: 0;
+
   color: white;
   font-weight: bold;
   font-size: 14px; /* Larger font size */
@@ -83,20 +83,20 @@ main { position: relative; height: 100vh; width: 100%; }
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Soft shadow for depth */
 
   /* Default background, will be overridden by specific classes */
-  background-color: #888; 
+  background-color: #888;
 }
 
 /* Color classes based on saturation ranges (adjust these ranges and colors as needed) */
 .saturation-marker.low {
-  background-color: #b2e3eb; 
+  background-color: #b2e3eb;
 }
 
 .saturation-marker.medium {
-  background-color: #69a8fb; 
+  background-color: #69a8fb;
 }
 
 .saturation-marker.high {
-  background-color: #0505f8; 
+  background-color: #0505f8;
 }
 
 /* --- Legend Styles --- */
@@ -176,28 +176,28 @@ main { position: relative; height: 100vh; width: 100%; }
 /* --- Disclaimer Styles --- */
 .disclaimer-overlay {
   /* Sits on top of everything */
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  
+
   /* Semi-transparent black background */
-  background-color: rgba(0, 0, 0, 0.6); 
-  
+  background-color: rgba(0, 0, 0, 0.6);
+
   /* Center the box */
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   /* High z-index to be on top of map UI */
-  z-index: 2000; 
+  z-index: 2000;
 }
 
 .disclaimer-box {
-  background-color: #dcca8a; 
+  background-color: #dcca8a;
   color: #000;
-  
+
   padding: 2rem 2.5rem;
   border-radius: 8px;
   text-align: center;
@@ -221,9 +221,9 @@ main { position: relative; height: 100vh; width: 100%; }
 }
 
 .disclaimer-box button {
-  background-color: #384e3c; 
+  background-color: #384e3c;
   color: white;
-  
+
   border: none;
   padding: 12px 24px;
   font-size: 1.1rem;
