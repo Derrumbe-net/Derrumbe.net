@@ -43,4 +43,24 @@ main { position: relative; height: 100vh; width: 100%; }
 }
 .leaflet-popup-content { width: 100% !important; }
 
+.logo-container {
+  position: absolute;
+  /* Bring the logo on top of the map */
+  z-index: 1000; 
+  /* Place it in the bottom right corner */
+  bottom: 20px; /* Adjust as needed for spacing from the bottom */
+  right: 20px;  /* Adjust as needed for spacing from the right */
+  
+  /* Add padding/margin/border for better visibility if necessary */
+  padding: 5px;
+  background-color: white; /* Optional: for better contrast */
+  border-radius: 5px; /* Optional */
+}
+
+.landslide-logo {
+  width: 150px; /* Adjust size as needed */
+  height: auto;
+  display: block;
+}
+
   

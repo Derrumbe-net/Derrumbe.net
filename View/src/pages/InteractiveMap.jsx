@@ -1,8 +1,9 @@
 import 'leaflet/dist/leaflet.css';
 import './InteractiveMap.css';
 import React, { useEffect} from 'react';
-import { MapContainer, TileLayer, ZoomControl, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, useMap } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
+import LandslideLogo from '../../../assets/images/Landslide_Hazard_Mitigation_Logo.avif';
 
 
 const EsriOverlays = () => {
@@ -56,6 +57,9 @@ export default function InteractiveMap() {
 
         <ZoomControl position="topleft" />
         <EsriOverlays />
+        <div className="logo-container">
+          <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
+        </div>
       </MapContainer>
     </main>
   );
