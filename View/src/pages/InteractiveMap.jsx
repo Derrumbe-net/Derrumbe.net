@@ -1,10 +1,12 @@
 import 'leaflet/dist/leaflet.css';
 import './InteractiveMap.css';
-import React, { useEffect} from 'react';
-import { MapContainer, TileLayer, ZoomControl, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
-import LandslideLogo from '../../../assets/images/Landslide_Hazard_Mitigation_Logo.avif';
+import LandslideLogo from '../../../assets/LANDSLIDEREADY_LOGO-Dx9P-n8S.avif';
+import StationPopup from '../components/StationPopup';
 
+const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
 
 const EsriOverlays = () => {
   const map = useMap();
@@ -34,8 +36,50 @@ const EsriOverlays = () => {
   return null;
 };
 
+const PopulateMarkers = () => {
+  const map = useMap();
+
+  const [station, setStations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(BASE_STATIONS_URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setStations(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("API Fetch Error:", err); // 
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+  <>
+  {station.map(station => (
+    <Marker 
+      key={station.id} 
+      position={[station.latitude, station.longitude]}
+    >
+      <StationPopup station={station} />
+    </Marker>
+  ))}
+</>
+  );
+
+}
+
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
+  
 
   return (
     <main>
@@ -57,6 +101,7 @@ export default function InteractiveMap() {
 
         <ZoomControl position="topleft" />
         <EsriOverlays />
+        <PopulateMarkers />
         <div className="logo-container">
           <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
         </div>
