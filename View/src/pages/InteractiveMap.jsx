@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaf
 import * as EL from 'esri-leaflet';
 import LandslideLogo from '../../../assets/LANDSLIDEREADY_LOGO-Dx9P-n8S.avif';
 import StationPopup from '../components/StationPopup';
+import L from 'leaflet'; 
 
 const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
 
@@ -56,24 +57,50 @@ const PopulateMarkers = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("API Fetch Error:", err); // 
+        console.error("API Fetch Error:", err); 
         setError(err.message);
         setLoading(false);
       });
   }, []);
 
+  const createCustomIcon = (saturation) => {
+    let className = 'saturation-marker'; 
+
+    if (saturation < 75) { 
+      className += ' low'; 
+    } else { 
+      className += ' medium';
+    }
+
+    // Round the saturation value
+    const roundedSaturation = Math.round(saturation);
+
+    return L.divIcon({
+      html: `<div class="${className}">${roundedSaturation}%</div>`, 
+      className: '', // Keep this empty to prevent Leaflet's default styles
+      iconSize: [55, 30], // **MATCH THESE TO CSS width/height**
+      iconAnchor: [27, 15], // **Adjust icon anchor to roughly center the rectangle** (width/2, height/2)
+    });
+  };
+
   return (
     <>
-      {station.map(station => (
-        station.is_available === 1 && (
-          <Marker 
-            key={station.id} 
-            position={[station.latitude, station.longitude]}
-          >
-            <StationPopup station={station} />
-          </Marker>
-        )
-      ))}
+      {station.map(station => {
+        if (station.is_available === 1 && station.soil_saturation != null) { 
+          const customIcon = createCustomIcon(station.soil_saturation);
+
+          return (
+            <Marker 
+              key={station.id} 
+              position={[station.latitude, station.longitude]}
+              icon={customIcon} 
+            >
+              <StationPopup station={station} />
+            </Marker>
+          );
+        }
+        return null; 
+      })}
     </>
   );
 
@@ -81,7 +108,6 @@ const PopulateMarkers = () => {
 
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
-  
 
   return (
     <main>

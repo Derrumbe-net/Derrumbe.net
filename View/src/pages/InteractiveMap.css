@@ -64,3 +64,38 @@ main { position: relative; height: 100vh; width: 100%; }
 }
 
   
+/* Styling for the custom DivIcon marker */
+.saturation-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 55px; /* Adjust width */
+  height: 30px; /* Adjust height */
+  /* Remove border-radius for rectangular shape */
+  border-radius: 0; 
+  
+  color: white;
+  font-weight: bold;
+  font-size: 14px; /* Larger font size */
+  line-height: 1;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.4); /* Subtle border */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Soft shadow for depth */
+
+  /* Default background, will be overridden by specific classes */
+  background-color: #888; 
+}
+
+/* Color classes based on saturation ranges (adjust these ranges and colors as needed) */
+.saturation-marker.low {
+  background-color: #f7a73b; /* Orange/Yellow */
+}
+
+.saturation-marker.medium {
+  background-color: #3b8cf7; /* Blue */
+}
+
+.saturation-marker.high {
+  background-color: #28a745; /* Green (if you want to add a high saturation color) */
+}
+
