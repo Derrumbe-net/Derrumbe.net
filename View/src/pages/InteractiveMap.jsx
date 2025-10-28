@@ -61,7 +61,6 @@ const PopulateStations = () => {
   const createStationIcon = (saturation) => {
     let className = 'saturation-marker'; 
 
-    // Classify Saturation type (low - medium - high)
     if (saturation >= 90) { 
       className += ' high'; 
     } else if (saturation >= 80){
@@ -74,9 +73,9 @@ const PopulateStations = () => {
 
     return L.divIcon({
       html: `<div class="${className}">${roundedSaturation}%</div>`, 
-      className: '', // Keep this empty to prevent Leaflet's default styles
-      iconSize: [55, 30], // **MATCH THESE TO CSS width/height**
-      iconAnchor: [27, 15], // **Adjust icon anchor to roughly center the rectangle** (width/2, height/2)
+      className: '',
+      iconSize: [55, 30],
+      iconAnchor: [27, 15],
     });
   };
 
@@ -102,11 +101,8 @@ const PopulateStations = () => {
   );
 }
 
-/**
- * Creates a custom icon for landslide markers.
- */
+// --- No changes in createLandslideIcon ---
  const createLandslideIcon = () => {
-  // Using a custom divIcon for a visually distinct landslide marker
   const iconHtml = `
     <div style="
       background-color: #dc2626; /* Red color */
@@ -120,46 +116,95 @@ const PopulateStations = () => {
 
   return L.divIcon({
     html: iconHtml,
-    className: '', // Clear default Leaflet class
-    iconSize: [26, 26], // Size of the visible part
-    iconAnchor: [13, 13], // Center the icon
+    className: '',
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
   });
 };
 
+const YearFilter = ({ selectedYear, availableYears, onYearChange }) => {
+  return (
+    <div className="year-filter-container">
+      <label htmlFor="year-select">Filter Landslides by Year:</label>
+      <select id="year-select" value={selectedYear} onChange={onYearChange}>
+        <option value="all">All Years</option>
+        {availableYears.map(year => (
+          <option key={year} value={year}>{year}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+
 const PopulateLandslides = () => {
-const [landslides, setLandslides] = useState([]);
+  const [allLandslides, setAllLandslides] = useState([]);
+  const [availableYears, setAvailableYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState('all');
+  
+  const customIcon = createLandslideIcon();
 
-useEffect(() => {
-  fetch(BASE_LANDSLIDES_URL)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      setLandslides(data);
-    })
-    .catch((err) => {
-      console.error("API Fetch Error:", err); 
-    });
-}, []);
+  useEffect(() => {
+    fetch(BASE_LANDSLIDES_URL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllLandslides(data);
 
-const customIcon = createLandslideIcon();
+        // Process data to find unique years using 'landslide_date'
+        const years = data.map(ls => {
+          if (!ls.landslide_date) return null;
+          return new Date(ls.landslide_date).getFullYear();
+        });
+        
+        const uniqueYears = [...new Set(years)]
+          .filter(year => !isNaN(year) && year !== null)
+          .sort((a, b) => b - a);
+          
+        setAvailableYears(uniqueYears);
+      })
+      .catch((err) => {
+        console.error("API Fetch Error:", err); 
+      });
+  }, []); 
+  
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
+  };
 
-return (
-  <>
-    {landslides.map(landslide => (
-      <Marker 
-        key={landslide.landslide_id} 
-        position={[landslide.latitude, landslide.longitude]}
-        icon={customIcon} 
-      >
-        <LandslidePopup landslide={landslide} />
-      </Marker>
-    ))}
-  </>
-);
+  const filteredLandslides = allLandslides.filter(landslide => {
+    if (selectedYear === 'all') {
+      return true;
+    }
+    if (!landslide.landslide_date) return false;
+    
+    const eventYear = new Date(landslide.landslide_date).getFullYear();
+    return eventYear === parseInt(selectedYear);
+  });
+
+  return (
+    <>
+      <YearFilter 
+        selectedYear={selectedYear}
+        availableYears={availableYears}
+        onYearChange={handleYearChange}
+      />
+
+      {filteredLandslides.map(landslide => (
+        <Marker 
+          key={landslide.landslide_id} 
+          position={[landslide.latitude, landslide.longitude]}
+          icon={customIcon} 
+        >
+          <LandslidePopup landslide={landslide} />
+        </Marker>
+      ))}
+    </>
+  );
 }
 
 const AddLegend = () => {
@@ -179,9 +224,7 @@ const AddLegend = () => {
   </div>
   </div>
   );
-
 }
-
 
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
@@ -213,6 +256,7 @@ export default function InteractiveMap() {
         <div className="logo-container">
           <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
         </div>
+
       </MapContainer>
     </main>
   );
