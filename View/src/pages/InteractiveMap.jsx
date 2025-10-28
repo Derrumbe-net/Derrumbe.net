@@ -3,7 +3,7 @@ import './InteractiveMap.css';
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
-import LandslideLogo from '../../../assets/LANDSLIDEREADY_LOGO-Dx9P-n8S.avif';
+import LandslideLogo from '../../../assets/images/Landslide_Hazard_Mitigation_Logo.avif';
 import StationPopup from '../components/StationPopup';
 import L from 'leaflet'; 
 
@@ -38,11 +38,7 @@ const EsriOverlays = () => {
 };
 
 const PopulateMarkers = () => {
-  const map = useMap();
-
   const [station, setStations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch(BASE_STATIONS_URL)
@@ -54,12 +50,9 @@ const PopulateMarkers = () => {
       })
       .then((data) => {
         setStations(data);
-        setLoading(false);
       })
       .catch((err) => {
         console.error("API Fetch Error:", err); 
-        setError(err.message);
-        setLoading(false);
       });
   }, []);
 
