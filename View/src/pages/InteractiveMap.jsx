@@ -3,7 +3,7 @@ import './InteractiveMap.css';
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
-import LandslideLogo from '../../../assets/images/Landslide_Hazard_Mitigation_Logo.avif';
+import LandslideLogo from '../assets/Landslide_Hazard_Mitigation_Logo.avif';
 import StationPopup from '../components/StationPopup';
 import L from 'leaflet'; 
 
