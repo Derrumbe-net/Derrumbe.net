@@ -88,14 +88,58 @@ main { position: relative; height: 100vh; width: 100%; }
 
 /* Color classes based on saturation ranges (adjust these ranges and colors as needed) */
 .saturation-marker.low {
-  background-color: #f7a73b; /* Orange/Yellow */
+  background-color: #b2e3eb; 
 }
 
 .saturation-marker.medium {
-  background-color: #3b8cf7; /* Blue */
+  background-color: #69a8fb; 
 }
 
 .saturation-marker.high {
-  background-color: #28a745; /* Green (if you want to add a high saturation color) */
+  background-color: #0505f8; 
 }
 
+/* --- Legend Styles --- */
+
+.legend-container {
+  position: absolute;
+  bottom: 120px; /* Position it above the logo (assuming logo is ~100px high and has 10px margin) */
+  right: 10px;
+  z-index: 1000; /* Ensure it is above the map tiles */
+  background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  color: #333;
+  max-width: 200px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color-box, .legend-landslide-box {
+  width: 20px;
+  height: 15px;
+  margin-right: 8px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* --- Logo Styles (If not already defined) --- */
+
+.logo-container {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.landslide-logo {
+  max-width: 100px; /* Adjust size as needed */
+  height: auto;
+}

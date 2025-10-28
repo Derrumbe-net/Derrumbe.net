@@ -61,13 +61,15 @@ const PopulateStations = () => {
   const createStationIcon = (saturation) => {
     let className = 'saturation-marker'; 
 
-    if (saturation < 75) { 
-      className += ' low'; 
-    } else { 
+    // Classify Saturation type (low - medium - high)
+    if (saturation >= 90) { 
+      className += ' high'; 
+    } else if (saturation >= 80){
       className += ' medium';
+    }else { 
+      className += ' low';
     }
 
-    // Round the saturation value
     const roundedSaturation = Math.round(saturation);
 
     return L.divIcon({
@@ -160,6 +162,26 @@ return (
 );
 }
 
+const AddLegend = () => {
+  return(
+  <div className="legend-container">
+  <div className="legend-item">
+    <span className="saturation-marker low"></span>
+    0-80% 
+  </div>
+  <div className="legend-item">
+    <span className="saturation-marker medium"></span>
+    80-90% 
+  </div>
+  <div className="legend-item">
+    <span className="saturation-marker high"></span>
+    90-100% 
+  </div>
+  </div>
+  );
+
+}
+
 
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
@@ -186,6 +208,8 @@ export default function InteractiveMap() {
         <EsriOverlays />
         <PopulateStations />
         <PopulateLandslides />
+        <AddLegend/>
+
         <div className="logo-container">
           <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
         </div>
