@@ -172,3 +172,68 @@ main { position: relative; height: 100vh; width: 100%; }
   border-radius: 3px;
   border: 1px solid #ccc;
 }
+
+/* --- Disclaimer Styles --- */
+.disclaimer-overlay {
+  /* Sits on top of everything */
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Semi-transparent black background */
+  background-color: rgba(0, 0, 0, 0.6); 
+  
+  /* Center the box */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* High z-index to be on top of map UI */
+  z-index: 2000; 
+}
+
+.disclaimer-box {
+  background-color: #dcca8a; 
+  color: #000;
+  
+  padding: 2rem 2.5rem;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 800px; /* Max width for large screens */
+  width: 90%; /* Responsive for small screens */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.disclaimer-box h2 {
+  font-size: 2.2rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.disclaimer-box p {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  font-size: 1rem;
+  font-family: sans-serif;
+}
+
+.disclaimer-box button {
+  background-color: #384e3c; 
+  color: white;
+  
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.disclaimer-box button:hover {
+  background-color: #2a3a2d; /* Darker on hover */
+}

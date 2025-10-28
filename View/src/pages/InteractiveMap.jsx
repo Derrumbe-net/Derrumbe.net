@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css';
 import './InteractiveMap.css';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
 import LandslideLogo from '../assets/Landslide_Hazard_Mitigation_Logo.avif';
@@ -10,6 +10,25 @@ import L from 'leaflet';
 
 const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
 const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
+
+const Disclaimer = ({ onAgree }) => {
+  return (
+    <div className="disclaimer-overlay">
+      <div className="disclaimer-box">
+        <h2>Aviso | Disclaimer</h2>
+        <p>
+          <strong>EN:</strong> The data presented on this platform is experimental. The Puerto Rico Landslide Hazard Mitigation Office is not responsible for the decisions taken after utilizing our data. By proceeding, you acknowledge and accept this disclaimer.
+        </p>
+        <p>
+          <strong>ES:</strong> Los datos presentados en esta plataforma son experimentales. La Oficina de Mitigación ante Deslizamientos de Puerto Rico no se hace responsable de las decisiones tomadas utilizando nuestra información. Al continuar, usted reconoce y acepta este aviso.
+        </p>
+        <button onClick={onAgree}>
+          Acepto | Agree
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const EsriOverlays = () => {
   const map = useMap();
@@ -135,7 +154,6 @@ const YearFilter = ({ selectedYear, availableYears, onYearChange }) => {
   );
 }
 
-
 const PopulateLandslides = () => {
   const [allLandslides, setAllLandslides] = useState([]);
   const [availableYears, setAvailableYears] = useState([]);
@@ -154,7 +172,6 @@ const PopulateLandslides = () => {
       .then((data) => {
         setAllLandslides(data);
 
-        // Process data to find unique years using 'landslide_date'
         const years = data.map(ls => {
           if (!ls.landslide_date) return null;
           return new Date(ls.landslide_date).getFullYear();
@@ -170,7 +187,7 @@ const PopulateLandslides = () => {
         console.error("API Fetch Error:", err); 
       });
   }, []); 
-  
+
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
@@ -228,8 +245,17 @@ const AddLegend = () => {
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
 
+  const [showDisclaimer, setShowDisclaimer] = useState(
+    localStorage.getItem('disclaimerAccepted') !== 'true'
+  );
+
+  const handleAgree = () => {
+    localStorage.setItem('disclaimerAccepted', 'true');
+    setShowDisclaimer(false);
+  };
   return (
     <main>
+      {showDisclaimer && <Disclaimer onAgree={handleAgree} />}
       <div className="map-label">SOIL SATURATION PERCENTAGE</div>
       <MapContainer
         id="map"
@@ -255,7 +281,6 @@ export default function InteractiveMap() {
         <div className="logo-container">
           <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
         </div>
-
       </MapContainer>
     </main>
   );
