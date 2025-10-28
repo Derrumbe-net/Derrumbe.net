@@ -101,7 +101,6 @@ const PopulateStations = () => {
   );
 }
 
-// --- No changes in createLandslideIcon ---
  const createLandslideIcon = () => {
   const iconHtml = `
     <div style="
