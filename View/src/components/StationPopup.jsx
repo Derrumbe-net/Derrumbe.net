@@ -3,9 +3,9 @@ import { Popup } from 'react-leaflet';
 import './StationPopup.css';
 
 const StationPopup = ({ station }) => {
-  if (!station) return null;
-
-  // Handle both snake_case and camelCase just in case
+  if (!station){
+    return null;
+  }
   const soilSaturation = station.soil_saturation;
   const lastUpdated = station.last_updated;
   const city = station.city;

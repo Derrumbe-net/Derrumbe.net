@@ -63,16 +63,18 @@ const PopulateMarkers = () => {
   }, []);
 
   return (
-  <>
-  {station.map(station => (
-    <Marker 
-      key={station.id} 
-      position={[station.latitude, station.longitude]}
-    >
-      <StationPopup station={station} />
-    </Marker>
-  ))}
-</>
+    <>
+      {station.map(station => (
+        station.is_available === 1 && (
+          <Marker 
+            key={station.id} 
+            position={[station.latitude, station.longitude]}
+          >
+            <StationPopup station={station} />
+          </Marker>
+        )
+      ))}
+    </>
   );
 
 }
