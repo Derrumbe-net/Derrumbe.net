@@ -5,9 +5,11 @@ import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaf
 import * as EL from 'esri-leaflet';
 import LandslideLogo from '../assets/Landslide_Hazard_Mitigation_Logo.avif';
 import StationPopup from '../components/StationPopup';
+import LandslidePopup from '../components/LandslidePopup';
 import L from 'leaflet'; 
 
 const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
+const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
 
 const EsriOverlays = () => {
   const map = useMap();
@@ -37,7 +39,7 @@ const EsriOverlays = () => {
   return null;
 };
 
-const PopulateMarkers = () => {
+const PopulateStations = () => {
   const [station, setStations] = useState([]);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const PopulateMarkers = () => {
       });
   }, []);
 
-  const createCustomIcon = (saturation) => {
+  const createStationIcon = (saturation) => {
     let className = 'saturation-marker'; 
 
     if (saturation < 75) { 
@@ -80,7 +82,7 @@ const PopulateMarkers = () => {
     <>
       {station.map(station => {
         if (station.is_available === 1 && station.soil_saturation != null) { 
-          const customIcon = createCustomIcon(station.soil_saturation);
+          const customIcon = createStationIcon(station.soil_saturation);
 
           return (
             <Marker 
@@ -96,8 +98,68 @@ const PopulateMarkers = () => {
       })}
     </>
   );
-
 }
+
+/**
+ * Creates a custom icon for landslide markers.
+ */
+ const createLandslideIcon = () => {
+  // Using a custom divIcon for a visually distinct landslide marker
+  const iconHtml = `
+    <div style="
+      background-color: #dc2626; /* Red color */
+      width: 20px; 
+      height: 20px; 
+      border-radius: 50%; 
+      border: 3px solid #7f1d1d; /* Darker red border */
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    "></div>
+  `;
+
+  return L.divIcon({
+    html: iconHtml,
+    className: '', // Clear default Leaflet class
+    iconSize: [26, 26], // Size of the visible part
+    iconAnchor: [13, 13], // Center the icon
+  });
+};
+
+const PopulateLandslides = () => {
+const [landslides, setLandslides] = useState([]);
+
+useEffect(() => {
+  fetch(BASE_LANDSLIDES_URL)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setLandslides(data);
+    })
+    .catch((err) => {
+      console.error("API Fetch Error:", err); 
+    });
+}, []);
+
+const customIcon = createLandslideIcon();
+
+return (
+  <>
+    {landslides.map(landslide => (
+      <Marker 
+        key={landslide.landslide_id} 
+        position={[landslide.latitude, landslide.longitude]}
+        icon={customIcon} 
+      >
+        <LandslidePopup landslide={landslide} />
+      </Marker>
+    ))}
+  </>
+);
+}
+
 
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
@@ -122,7 +184,8 @@ export default function InteractiveMap() {
 
         <ZoomControl position="topleft" />
         <EsriOverlays />
-        <PopulateMarkers />
+        <PopulateStations />
+        <PopulateLandslides />
         <div className="logo-container">
           <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
         </div>
