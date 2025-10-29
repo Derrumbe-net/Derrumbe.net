@@ -96,7 +96,7 @@ jobs:
         run: |
           mkdir deploy_staging
           cp -r ./View/dist/* ./deploy_staging/
-          cp composer.json composer.lock .htaccess ./deploy_staging/
+          cp composer.json .htaccess ./deploy_staging/
           cp -r api ./deploy_staging/
 
       # Deploy to 'deploy' branch
