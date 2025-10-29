@@ -2,7 +2,7 @@ name: Run Frontend and Backend tests
 
 on:
   pull_request:
-    branches: [ "main", "demo" ]
+  
   workflow_dispatch:
 
 jobs:
