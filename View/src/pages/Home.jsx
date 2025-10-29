@@ -5,7 +5,6 @@ import mapPreview from '../assets/interactive_map_preview.webp';
 import landslidePhoto from '../assets/landslide_landing_page.webp';
 import newsImage from '../assets/alturas_de_belgica.gif';
 import officeImage from '../assets/office_door.webp';
-import logo from '../assets/PRLHMO_LOGO.svg';
 import CCFLHLogo from "../assets/CCFLH_LOGO.svg";
 
 

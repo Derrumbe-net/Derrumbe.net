@@ -2,21 +2,38 @@
     "name": "derrumbe/derrumbe-net",
     "autoload": {
         "psr-4": {
-            "Negroni\\DerrumbeNet\\": "src/"
+            "DerrumbeNet\\": "api/"
         }
     },
     "authors": [
         {
             "name": "Alanis Negroni",
             "email": "negronialanis2@gmail.com"
+        },
+        {
+          "name": "Jose J Irizzary",
+          "email": "jose.irizarry24@upr.edu"
+        },
+        {
+          "name": "Glerysbeth Serrano",
+          "email": "glerysbeth.serrano@upr.edu"
+        },
+        {
+          "name": "Jose R Rivera",
+          "email": "jose.rivera471@upr.edu"
         }
     ],
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "slim/slim": "4.*",
-        "slim/psr7": "^1.7"
+        "slim/psr7": "^1.7",
+      "ext-pdo": "*",
+      "ext-json": "*"
     },
     "config": {
         "vendor-dir": "api/vendor"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.4"
     }
 }
