@@ -1,6 +1,9 @@
 name: Run Frontend and Backend tests
 
 on:
+  push:
+    branches:
+      - '**'
   pull_request:
   
   workflow_dispatch:
