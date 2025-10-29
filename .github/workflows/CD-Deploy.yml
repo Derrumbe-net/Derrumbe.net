@@ -12,25 +12,30 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      
+      # Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Setup Node.js for frontend
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: View/package-lock.json
+          # Use package.json for caching so it works even if package-lock.json is missing
+          cache-dependency-path: View/package.json
 
+      # Install dependencies (npm install will generate package-lock.json if missing)
       - name: Install Dependencies
         run: npm install
         working-directory: ./View
 
+      # Build the frontend project
       - name: Build Project
         run: npm run build
         working-directory: ./View
 
+      # Prepare deployment directory
       - name: Prepare Deployment Directory
         run: |
           mkdir deploy_staging
@@ -38,6 +43,7 @@ jobs:
           cp composer.json composer.lock .htaccess ./deploy_staging/
           cp -r api ./deploy_staging/
 
+      # Deploy to 'deploy' branch
       - name: Deploy to 'deploy' Branch
         uses: peaceiris/actions-gh-pages@v3
         with:
