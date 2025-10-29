@@ -1,8 +1,7 @@
 <?php
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
-require_once __DIR__ . '/../Controller/LandslideController.php';
+use DerrumbeNet\Controller\LandslideController;
 
 return function (App $app, $db) {
     $landslideController = new LandslideController($db);

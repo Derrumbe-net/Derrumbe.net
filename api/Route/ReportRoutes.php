@@ -1,8 +1,7 @@
 <?php
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
-require_once __DIR__ . '/../Controller/ReportController.php';
+use DerrumbeNet\Controller\ReportController;
 
 return function (App $app, $db) {
     $controller = new ReportController($db);

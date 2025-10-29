@@ -2,6 +2,9 @@
 
 namespace DerrumbeNet\Model;
 
+use PDO;
+use PDOException;
+
 class Landslide {
     private $conn;
 

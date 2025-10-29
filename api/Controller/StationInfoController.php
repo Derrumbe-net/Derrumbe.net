@@ -2,10 +2,10 @@
 
 namespace DerrumbeNet\Controller;
 
-require_once __DIR__ . '/../Model/StationInfo.php';
+use DerrumbeNet\Model\StationInfo;
 
 class StationInfoController {
-    private $stationInfoModel;
+    private StationInfo $stationInfoModel;
     public function __construct($db) { $this->stationInfoModel = new StationInfo($db); }
 
     private function jsonResponse($response, $data, $status=200){

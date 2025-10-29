@@ -2,7 +2,8 @@
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
-require_once __DIR__ . '/../Controller/AdminController.php';
+use DerrumbeNet\Controller\AdminController;
+
 
 return function (App $app, $db) {
     $adminController = new AdminController($db);

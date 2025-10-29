@@ -2,15 +2,20 @@
 
 namespace DerrumbeNet\Config;
 
+use PDO;
+use PDOException;
+use Dotenv\Dotenv;
+
 class Database {
     private static $conn = null;
 
     public static function getConnection() {
         if (self::$conn === null) {
-            // Load dependencies and .env file
-            require __DIR__ . '/../vendor/autoload.php';
-            $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../../');
-            $dotenv->load();
+
+            require_once __DIR__ . '/../vendor/autoload.php';
+
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../');
+            $dotenv->safeLoad();
 
             $servername = $_ENV['DB_HOST'];
             $username   = $_ENV['DB_USER'];
@@ -35,4 +40,3 @@ class Database {
         return self::$conn;
     }
 }
-
