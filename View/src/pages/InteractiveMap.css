@@ -1,0 +1,239 @@
+/* --- foundation so the map fills the viewport --- */
+html, body, #root { height: 100%; margin: 0; }
+main { position: relative; height: 100vh; width: 100%; }
+
+/* --- fullscreen map --- */
+#map {
+  position: relative;
+  height: 100vh;         /* use viewport height for the full-bleed feel */
+  width: 100%;
+  display: block;
+}
+
+/* --- title pill centered at top --- */
+.map-label {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.85);
+  color: #fff;
+  padding: 10px 18px;
+  font: 700 18px/1.2 "Bebas Neue","Helvetica Neue",Arial,sans-serif;
+  border-radius: 6px;
+  letter-spacing: .02em;
+  z-index: 1001;
+  display: inline-flex;   /* turn it on (original had display:none) */
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+/* --- popup styling --- */
+.leaflet-popup-content-wrapper {
+  background: #141414 !important;
+  border-radius: 6px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  width: 500px;
+  font-family: "Bebas Neue","Helvetica Neue",Arial,sans-serif;
+}
+.leaflet-popup-content { width: 100% !important; }
+
+.logo-container {
+  position: absolute;
+  /* Bring the logo on top of the map */
+  z-index: 1000;
+  /* Place it in the bottom right corner */
+  bottom: 20px; /* Adjust as needed for spacing from the bottom */
+  right: 20px;  /* Adjust as needed for spacing from the right */
+
+  /* Add padding/margin/border for better visibility if necessary */
+  padding: 5px;
+  background-color: white; /* Optional: for better contrast */
+  border-radius: 5px; /* Optional */
+}
+
+.landslide-logo {
+  width: 150px; /* Adjust size as needed */
+  height: auto;
+  display: block;
+}
+
+
+/* Styling for the custom DivIcon marker */
+.saturation-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 55px; /* Adjust width */
+  height: 30px; /* Adjust height */
+  /* Remove border-radius for rectangular shape */
+  border-radius: 0;
+
+  color: white;
+  font-weight: bold;
+  font-size: 14px; /* Larger font size */
+  line-height: 1;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.4); /* Subtle border */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Soft shadow for depth */
+
+  /* Default background, will be overridden by specific classes */
+  background-color: #888;
+}
+
+/* Color classes based on saturation ranges (adjust these ranges and colors as needed) */
+.saturation-marker.low {
+  background-color: #b2e3eb;
+}
+
+.saturation-marker.medium {
+  background-color: #69a8fb;
+}
+
+.saturation-marker.high {
+  background-color: #0505f8;
+}
+
+/* --- Legend Styles --- */
+
+.legend-container {
+  position: absolute;
+  bottom: 120px; /* Position it above the logo (assuming logo is ~100px high and has 10px margin) */
+  right: 10px;
+  z-index: 1000; /* Ensure it is above the map tiles */
+  background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  color: #333;
+  max-width: 200px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color-box, .legend-landslide-box {
+  width: 20px;
+  height: 15px;
+  margin-right: 8px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* --- Logo Styles (If not already defined) --- */
+
+.logo-container {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.landslide-logo {
+  max-width: 100px; /* Adjust size as needed */
+  height: auto;
+}
+
+/* --- Year Filter Styles --- */
+.year-filter-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000; /* Ensure it's above map tiles */
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 8px 12px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-family: Arial, sans-serif;
+}
+
+.year-filter-container label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.year-filter-container select {
+  width: 100%;
+  padding: 5px;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+/* --- Disclaimer Styles --- */
+.disclaimer-overlay {
+  /* Sits on top of everything */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Semi-transparent black background */
+  background-color: rgba(0, 0, 0, 0.6);
+
+  /* Center the box */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* High z-index to be on top of map UI */
+  z-index: 2000;
+}
+
+.disclaimer-box {
+  background-color: #dcca8a;
+  color: #000;
+
+  padding: 2rem 2.5rem;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 800px; /* Max width for large screens */
+  width: 90%; /* Responsive for small screens */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.disclaimer-box h2 {
+  font-size: 2.2rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.disclaimer-box p {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  font-size: 1rem;
+  font-family: sans-serif;
+}
+
+.disclaimer-box button {
+  background-color: #384e3c;
+  color: white;
+
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.disclaimer-box button:hover {
+  background-color: #2a3a2d; /* Darker on hover */
+}
