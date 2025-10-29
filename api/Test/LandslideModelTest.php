@@ -1,7 +1,7 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../Model/Landslide.php';
+use PHPUnit\Framework\TestCase;
+use DerrumbeNet\Model\Landslide;
 
 class LandslideModelTest extends TestCase
 {

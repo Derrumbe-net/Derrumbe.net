@@ -2,9 +2,8 @@
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-
-require_once __DIR__ . '/../Controller/LandslideController.php';
-require_once __DIR__ . '/../Model/Landslide.php';
+use DerrumbeNet\Controller\LandslideController;
+use DerrumbeNet\Model\Landslide;
 
 class LandslideControllerTest extends TestCase
 {
