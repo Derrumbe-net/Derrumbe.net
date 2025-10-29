@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
 class Landslide {
     private $conn;
 

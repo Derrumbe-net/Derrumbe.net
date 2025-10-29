@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Config;
+
 class Database {
     private static $conn = null;
 

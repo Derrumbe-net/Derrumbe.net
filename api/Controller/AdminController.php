@@ -1,6 +1,8 @@
 <?php
-require_once __DIR__ . '/../Model/Admin.php';
 
+namespace DerrumbeNet\Controller;
+
+require_once __DIR__ . '/../Model/Admin.php';
 class AdminController {
     private $adminModel;
 

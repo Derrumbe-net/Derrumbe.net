@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Controller;
+
 require_once __DIR__ . '/../Model/StationInfo.php';
 
 class StationInfoController {
