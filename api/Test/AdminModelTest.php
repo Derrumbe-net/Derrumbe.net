@@ -14,23 +14,19 @@ class AdminModelTest extends TestCase
 
     protected function setUp(): void
     {
-        // Mock PDO
         $this->mockPDO = $this->createMock(PDO::class);
         $this->admin = new Admin($this->mockPDO);
     }
 
     public function testCreateAdminSuccess()
     {
-        // Mock the statement returned by prepare()
         $stmtMock = $this->createMock(PDOStatement::class);
         $stmtMock->method('execute')->willReturn(true);
 
-        // Mock PDO connection
         $pdoMock = $this->createMock(PDO::class);
         $pdoMock->method('prepare')->willReturn($stmtMock);
         $pdoMock->method('lastInsertId')->willReturn('1');
 
-        // Pass mocked DB to Admin
         $admin = new Admin($pdoMock);
         $result = $admin->createAdmin('test@example.com', 'password');
 
