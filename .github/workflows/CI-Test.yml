@@ -51,17 +51,14 @@ jobs:
       # Install Composer dependencies
       - name: Install Backend Dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
-        working-directory: ./api
+        working-directory: ./
 
-      # Validate PHP syntax before running tests
+      # Validate PHP syntax
       - name: Validate PHP Syntax
-        run: find api -name "*.php" -exec php -l {} \;
-
+        run: find . -name "*.php" -exec php -l {} \;
+      
       # Run PHPUnit tests
       - name: Run PHP Unit tests
-        run: |
-          if [ -f "./api/vendor/bin/phpunit" ]; then
-            ./api/vendor/bin/phpunit --testdox
-          else
-            echo "PHPUnit not yet configured. Skipping tests."
-          fi
+        run: ./vendor/bin/phpunit
+        working-directory: ./api
+         
