@@ -5,7 +5,7 @@ on:
     branches:
       - '**'
   pull_request:
-  
+
   workflow_dispatch:
 
 jobs:
@@ -56,9 +56,9 @@ jobs:
       # Validate PHP syntax
       - name: Validate PHP Syntax
         run: find . -name "*.php" -exec php -l {} \;
-      
+
       # Run PHPUnit tests
       - name: Run PHP Unit tests
         run: ./vendor/bin/phpunit
         working-directory: ./api
-         
+
