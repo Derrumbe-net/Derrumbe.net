@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Controller;
+
 require_once __DIR__ . '/../Model/Report.php';
 
 class ReportController {

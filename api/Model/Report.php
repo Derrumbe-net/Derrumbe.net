@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
 class Report {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }

@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . '/../Config/database.php';
+
+namespace DerrumbeNet\Model;
+
+require_once __DIR__ . '/../Config/Database.php';
 
 class Admin {
     private $conn;

@@ -1,4 +1,7 @@
 <?php
+
+namespace DerrumbeNet\Test;
+
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../Model/Admin.php';

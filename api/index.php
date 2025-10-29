@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/./vendor/autoload.php';
-require_once __DIR__ . '/./Config/database.php';
+require_once __DIR__ . '/./Config/Database.php';
 use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
