@@ -5,7 +5,8 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Guide from './pages/Guide';
 import InteractiveMap from './pages/InteractiveMap';
-import LandslideReadyPR from './pages/LandslideReadyPR';
+import LandslideReadyPR_Individuos from './pages/LandslideReadyPR_Individuos';
+import LandslideReadyPR_Municipios from './pages/LandslideReadyPR_Municipios';
 import Projects from './pages/Projects';
 import Publications from './pages/Publications';
 import RainForecast from './pages/RainForecast';
@@ -30,7 +31,8 @@ const router = createBrowserRouter([
       { path: 'mapa-susceptibilidad', element: <SusceptibilityMap /> },
       { path: 'reportar', element: <Report /> },
       { path: 'solicitud', element: <Request />},
-      { path: 'landslideready-pr', element: <LandslideReadyPR /> },
+      { path: 'landslideready-individuos', element: <LandslideReadyPR_Individuos /> },
+      { path: 'landslideready-municipios', element: <LandslideReadyPR_Municipios /> },
     ],
   },
 ]);

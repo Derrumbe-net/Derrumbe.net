@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/PRLHMO_LOGO.svg';
+import landslideReadyLogo from '../assets/LANDSLIDEREADY_LOGO.avif';
 
 function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleDropdown = (menu) => {
     setOpenDropdown(openDropdown === menu ? null : menu);
@@ -14,34 +16,31 @@ function Navbar() {
       <div className="nav__inner">
         {/* Logo → Landing */}
         <Link to="/" className="nav__brand" aria-label="Ir al inicio">
-          <img
-            src={logo}
-            alt="PR Landslide Hazard Mitigation Office"
-            className="nav__logo"
-          />
+          <img src={logo} alt="PR Landslide Hazard Mitigation Office" className="nav__logo" />
         </Link>
 
-        <ul className="nav__list">
+        {/* Hamburger Button */}
+        <button
+          className="nav__hamburger"
+          aria-label="Toggle menu"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          ☰
+        </button>
 
-          <li className="nav__item">
-            <Link to="/" className="nav__link">Inicio</Link>
-          </li>
+        <ul className={`nav__list ${menuOpen ? 'active' : ''}`}>
+          <li className="nav__item"><Link to="/" className="nav__link">Inicio</Link></li>
+          <li className="nav__item"><Link to="/sobre-nosotros" className="nav__link">Sobre Nosotros</Link></li>
 
-          <li className="nav__item">
-            <Link to="/sobre-nosotros" className="nav__link">Sobre Nosotros</Link>
-          </li>
-
-          {/* Contribuciones */}
+          {/* Investigación */}
           <li className="nav__item nav__item--dropdown">
             <button
               className="nav__link nav__toggle"
-              aria-haspopup="true"
-              aria-expanded={openDropdown === "contribuciones"}
-              onClick={() => toggleDropdown("contribuciones")}
+              onClick={() => toggleDropdown('investigación')}
             >
-              Contribuciones {openDropdown === "contribuciones" ? "▴" : "▾"}
+              Investigación {openDropdown === 'investigación' ? '▴' : '▾'}
             </button>
-            {openDropdown === "contribuciones" && (
+            {openDropdown === 'investigación' && (
               <ul className="nav__menu">
                 <li><Link to="/proyectos" className="nav__sublink">Proyectos</Link></li>
                 <li><Link to="/publicaciones" className="nav__sublink">Publicaciones</Link></li>
@@ -53,13 +52,11 @@ function Navbar() {
           <li className="nav__item nav__item--dropdown">
             <button
               className="nav__link nav__toggle"
-              aria-haspopup="true"
-              aria-expanded={openDropdown === "monitoreo"}
-              onClick={() => toggleDropdown("monitoreo")}
+              onClick={() => toggleDropdown('monitoreo')}
             >
-              Monitoreo {openDropdown === "monitoreo" ? "▴" : "▾"}
+              Monitoreo {openDropdown === 'monitoreo' ? '▴' : '▾'}
             </button>
-            {openDropdown === "monitoreo" && (
+            {openDropdown === 'monitoreo' && (
               <ul className="nav__menu">
                 <li><Link to="/mapa-interactivo" className="nav__sublink">Mapa Interactivo</Link></li>
                 <li><Link to="/estaciones" className="nav__sublink">Estaciones</Link></li>
@@ -72,13 +69,11 @@ function Navbar() {
           <li className="nav__item nav__item--dropdown">
             <button
               className="nav__link nav__toggle"
-              aria-haspopup="true"
-              aria-expanded={openDropdown === "recursos"}
-              onClick={() => toggleDropdown("recursos")}
+              onClick={() => toggleDropdown('recursos')}
             >
-              Recursos {openDropdown === "recursos" ? "▴" : "▾"}
+              Recursos {openDropdown === 'recursos' ? '▴' : '▾'}
             </button>
-            {openDropdown === "recursos" && (
+            {openDropdown === 'recursos' && (
               <ul className="nav__menu">
                 <li><Link to="/guia-deslizamientos" className="nav__sublink">Guía sobre Deslizamientos</Link></li>
                 <li><Link to="/mapa-susceptibilidad" className="nav__sublink">Mapa de Susceptibilidad</Link></li>
@@ -87,12 +82,30 @@ function Navbar() {
           </li>
 
           <li className="nav__item"><Link to="/reportar" className="nav__link">Reportar</Link></li>
-          <li className="nav__item"><Link to="/landslideready-pr" className="nav__link">LandslideReady</Link></li>
+
+          {/* LandslideReady */}
+          <li className="nav__item nav__item--dropdown">
+            <button
+              className="nav__link nav__toggle"
+              onClick={() => toggleDropdown('landslideready')}
+            >
+              <img
+                src={landslideReadyLogo}
+                alt="LandslideReady PR"
+                className="nav__logo"
+                style={{ height: '1.5rem', verticalAlign: 'middle' }}
+              />{" "}
+              {openDropdown === 'landslideready' ? '▴' : '▾'}
+            </button>
+            {openDropdown === 'landslideready' && (
+              <ul className="nav__menu">
+                <li><Link to="/landslideready-individuos" className="nav__sublink">LandslideReady para Individuos</Link></li>
+                <li><Link to="/landslideready-municipios" className="nav__sublink">LandslideReady para Municipios</Link></li>
+              </ul>
+            )}
+          </li>
         </ul>
       </div>
-
-      {/* Dropdowns render BELOW navbar */}
-      {openDropdown && <div className="nav__dropdown-background"></div>}
     </nav>
   );
 }

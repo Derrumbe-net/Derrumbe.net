@@ -5,6 +5,7 @@ import mapPreview from '../assets/interactive_map_preview.webp';
 import landslidePhoto from '../assets/landslide_landing_page.webp';
 import newsImage from '../assets/alturas_de_belgica.gif';
 import officeImage from '../assets/office_door.webp';
+import uprmLogo from "../assets/UPRM_LOGO.png";
 import logo from '../assets/PRLHMO_LOGO.svg';
 import CCFLHLogo from "../assets/CCFLH_LOGO.svg";
 
@@ -16,10 +17,15 @@ function Home() {
       {/* HERO SECTION */}
       <section className="hero" style={{ backgroundImage: `url(${heroImage})` }}>
         <div className="hero__overlay">
-          <h1 className="hero__title">
-            Oficina de Mitigación ante <br />
-            Deslizamientos de Tierra en Puerto Rico
-          </h1>
+          <div className="hero__logos">
+            <img src={logo} alt="PRLHMO Logo" className="hero__logo hero__logo--left" />
+            <h1 className="hero__title">
+              Oficina de Mitigación ante <br />
+              Deslizamientos de Tierra en Puerto Rico
+            </h1>
+            <img src={uprmLogo} alt="UPRM Logo" className="hero__logo hero__logo--right" />
+          </div>
+          
           <div className="hero__buttons">
             <a href="#contact" className="btn btn--contact">Contáctenos</a>
             <Link to="/solicitud" className="btn btn--outline">Solicitud de Charla</Link>
@@ -36,13 +42,13 @@ function Home() {
         /> */}
 
         <div className="landing__map-text">
-          <h2>Mapa Interactivo de Monitoreo de Deslizamientos</h2>
+          <h2>Explora nuestro Mapa Interactivo de Monitoreo de Deslizamientos</h2>
           <p>
             Herramienta interactiva que muestra, en tiempo real, datos de saturación del suelo, 
             susceptibilidad a deslizamientos y estimaciones de precipitación en Puerto Rico.
           </p>
           <a className="landing__map-link">
-            ¡Haz clic en el mapa! <span className="arrow">→</span>
+            ¡Haz clic en el mapa!
           </a>
         </div>
 
