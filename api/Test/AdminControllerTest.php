@@ -5,9 +5,11 @@ namespace DerrumbeNet\Test;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
+use DerrumbeNet\Controller\AdminController;
+use DerrumbeNet\Model\Admin;
+use PDO;
+use PDOStatement;
 
-require_once __DIR__ . '/../Controller/AdminController.php';
-require_once __DIR__ . '/../Model/Admin.php';
 
 class AdminControllerTest extends TestCase
 {

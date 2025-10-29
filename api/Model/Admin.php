@@ -2,7 +2,10 @@
 
 namespace DerrumbeNet\Model;
 
-require_once __DIR__ . '/../Config/Database.php';
+use PDO;
+use PDOStatement;
+
+use DerrumbeNet\Config\Database;
 
 class Admin {
     private $conn;
