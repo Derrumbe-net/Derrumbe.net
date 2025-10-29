@@ -2,10 +2,10 @@
 
 namespace DerrumbeNet\Controller;
 
-require_once __DIR__ . '/../Model/Report.php';
+use DerrumbeNet\Model\Report;
 
 class ReportController {
-    private $reportModel;
+    private Report $reportModel;
     public function __construct($db){ $this->reportModel = new Report($db); }
 
     private function jsonResponse($response, $data, $status=200){

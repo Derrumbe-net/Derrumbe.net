@@ -2,10 +2,10 @@
 
 namespace DerrumbeNet\Controller;
 
-require_once __DIR__ . '/../Model/Project.php';
+use DerrumbeNet\Model\Project;
 
 class ProjectController {
-    private $projectModel;
+    private Project $projectModel;
     public function __construct($db) { $this->projectModel = new Project($db); }
 
     private function jsonResponse($response, $data, $status=200) {

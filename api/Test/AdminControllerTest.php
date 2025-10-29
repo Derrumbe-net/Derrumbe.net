@@ -14,8 +14,8 @@ use PDOStatement;
 class AdminControllerTest extends TestCase
 {
     private $stmtMock;
-    private $controller;
-    private $response;
+    private AdminController $controller;
+    private Response $response;
 
     protected function setUp(): void
     {

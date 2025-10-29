@@ -1,7 +1,7 @@
 <?php
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-require_once __DIR__ . '/../Controller/ProjectController.php';
+use DerrumbeNet\Controller\ProjectController;
 
 return function (App $app, $db) {
     $controller = new ProjectController($db);

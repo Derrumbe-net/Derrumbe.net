@@ -2,6 +2,9 @@
 
 namespace DerrumbeNet\Model;
 
+use PDO;
+use PDOException;
+
 class Report {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }

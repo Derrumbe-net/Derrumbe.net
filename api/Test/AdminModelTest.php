@@ -10,7 +10,7 @@ use DerrumbeNet\Model\Admin;
 class AdminModelTest extends TestCase
 {
     private $mockPDO;
-    private $admin;
+    private Admin $admin;
 
     protected function setUp(): void
     {

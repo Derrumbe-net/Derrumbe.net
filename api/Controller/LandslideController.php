@@ -2,10 +2,10 @@
 
 namespace DerrumbeNet\Controller;
 
-require_once __DIR__ . '/../Model/Landslide.php';
+use DerrumbeNet\Model\Landslide;
 
 class LandslideController {
-    private $landslideModel;
+    private Landslide $landslideModel;
 
     public function __construct($db) {
         $this->landslideModel = new Landslide($db);

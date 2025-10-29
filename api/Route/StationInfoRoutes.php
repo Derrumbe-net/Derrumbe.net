@@ -1,8 +1,7 @@
 <?php
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
-require_once __DIR__ . '/../Controller/StationInfoController.php';
+use DerrumbeNet\Controller\StationInfoController;
 
 return function (App $app, $db) {
     $stationInfoController = new StationInfoController($db);
