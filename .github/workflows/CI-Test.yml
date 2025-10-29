@@ -5,7 +5,6 @@ on:
     branches:
       - '**'
   pull_request:
-  
   workflow_dispatch:
 
 jobs:
@@ -13,24 +12,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
+      # Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Setup Node.js for React/Vite frontend
+      # Setup Node.js for frontend
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: View/package-lock.json
+          # Use package.json for caching so it works even if package-lock.json is missing
+          cache-dependency-path: View/package.json
 
-      # Install dependencies
+      # Install frontend dependencies (will generate package-lock.json if missing)
       - name: Install Frontend Dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./View
 
-      # Run React/Vite tests (Vitest, Jest, etc.)
+      # Run React/Vite frontend tests
       - name: Run Frontend tests
         run: npm test --if-present
         working-directory: ./View
@@ -40,13 +40,13 @@ jobs:
         run: npm run lint --if-present
         working-directory: ./View
 
+      # Setup PHP for backend
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, xml, dom, curl, pdo, pdo_mysql
           coverage: none
-
 
       # Install Composer dependencies
       - name: Install Backend Dependencies
@@ -56,9 +56,8 @@ jobs:
       # Validate PHP syntax
       - name: Validate PHP Syntax
         run: find . -name "*.php" -exec php -l {} \;
-      
+
       # Run PHPUnit tests
       - name: Run PHP Unit tests
         run: ./vendor/bin/phpunit
         working-directory: ./api
-         
