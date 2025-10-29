@@ -1,4 +1,4 @@
-name: CI and Deploy Demo
+name: CI/CD
 
 on:
   push:
