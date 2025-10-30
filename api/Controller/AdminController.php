@@ -1,8 +1,11 @@
 <?php
-require_once __DIR__ . '/../Model/Admin.php';
+
+namespace DerrumbeNet\Controller;
+
+use DerrumbeNet\Model\Admin;
 
 class AdminController {
-    private $adminModel;
+    private Admin $adminModel;
 
     public function __construct($db) {
         $this->adminModel = new Admin($db);

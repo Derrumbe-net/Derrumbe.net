@@ -25,7 +25,7 @@ function Home() {
             </h1>
             <img src={uprmLogo} alt="UPRM Logo" className="hero__logo hero__logo--right" />
           </div>
-          
+
           <div className="hero__buttons">
             <a href="#contact" className="btn btn--contact">Contáctenos</a>
             <Link to="/solicitud" className="btn btn--outline">Solicitud de Charla</Link>

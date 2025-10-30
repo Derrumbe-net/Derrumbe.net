@@ -1,4 +1,10 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
+use PDO;
+use PDOException;
+
 class StationInfo {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
@@ -25,7 +31,11 @@ class StationInfo {
             $stmt->bindParam(':latitude', $data['latitude'], PDO::PARAM_STR);
             $stmt->bindParam(':longitude', $data['longitude'], PDO::PARAM_STR);
             $stmt->execute();
-            return $this->conn->lastInsertId();
+            if ($stmt->execute()) {
+                return $this->conn->lastInsertId();
+            } else {
+                return false;
+            }
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     

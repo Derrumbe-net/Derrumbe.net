@@ -1,8 +1,11 @@
 <?php
-require_once __DIR__ . '/../Model/Publication.php';
+
+namespace DerrumbeNet\Controller;
+
+use DerrumbeNet\Model\Publication;
 
 class PublicationController {
-    private $publicationModel;
+    private Publication $publicationModel;
     public function __construct($db) { $this->publicationModel = new Publication($db); }
 
     private function jsonResponse($response, $data, $status = 200) {

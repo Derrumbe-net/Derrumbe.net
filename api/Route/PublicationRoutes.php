@@ -1,8 +1,7 @@
 <?php
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
-
-require_once __DIR__ . '/../Controller/PublicationController.php';
+use DerrumbeNet\Controller\PublicationController;
 
 return function (App $app, $db) {
     $publicationController = new PublicationController($db);
