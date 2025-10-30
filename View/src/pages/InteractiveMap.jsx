@@ -8,8 +8,8 @@ import StationPopup from '../components/StationPopup';
 import LandslidePopup from '../components/LandslidePopup';
 import L from 'leaflet';
 
-const BASE_STATIONS_URL = "http://localhost:8001/api/stations"
-const BASE_LANDSLIDES_URL = "http://localhost:8001/api/landslides";
+const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.netapi/stations"
+const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
 
 const Disclaimer = ({ onAgree }) => {
     return (
