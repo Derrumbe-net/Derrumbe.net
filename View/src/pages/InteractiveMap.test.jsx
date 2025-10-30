@@ -27,8 +27,9 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
-let global;
-global.fetch = vi.fn();
+vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    json: vi.fn().mockResolvedValue({ /* mock data */ })
+}));
 
 const mockFetch = (url) => {
     if (url.includes('stations')) {
@@ -85,9 +86,10 @@ vi.mock('esri-leaflet', () => ({
 
 beforeEach(() => {
     localStorageMock.clear();
-    global.fetch.mockImplementation(mockFetch);
+    vi.stubGlobal('fetch', vi.fn(mockFetch));
     vi.spyOn(console, 'error').mockImplementation(() => {});
 });
+
 
 afterEach(() => {
     vi.clearAllMocks();
