@@ -21,7 +21,9 @@ function Projects() {
   const [filterStatus, setFilterStatus] = useState("present"); 
 
   // Hardcoded projects (temporary)
-  const hardcodedProjects  = [
+    useEffect(() => {
+        // TODO: replace with backend fetch
+        const hardcodedProjects = [
   {
     id: 1,
     title: "LandslideReady community engagement program in Puerto Rico",
@@ -113,11 +115,9 @@ function Projects() {
     image: pastproject4,
   },
 ];
+        setProjects(hardcodedProjects);
+    }, []);
 
-  useEffect(() => {
-    // TODO: replace with backend fetch
-    setProjects(hardcodedProjects);
-  }, []);
 
   const filteredProjects = projects.filter((p) => {
     const matchesStatus = p.status === filterStatus;
@@ -125,7 +125,7 @@ function Projects() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
-  });
+  })
 
   return (
     <div className="projects-page">

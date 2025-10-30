@@ -1,7 +1,6 @@
 import './LandslideReadyPR_Individuos_module.css';
 import ecoLogo from '../assets/ECOEXPLORATORIO_LOGO.svg';
 import coursePreview from '../assets/landslideready_module.webp';
-import logo from '../assets/LANDSLIDEREADY_LOGO.avif';
 
 function LandslideReadyPR_Individuos() {
   return (

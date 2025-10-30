@@ -28,7 +28,9 @@ function Publications() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Hardcoded publications (temporary)
-  const hardcodedPublications = [
+    useEffect(() => {
+        // TODO: replace with backend fetch
+        const hardcodedPublications =  [
     {
       id: 1,
       title:
@@ -201,13 +203,11 @@ function Publications() {
       url: "https://drive.google.com/file/d/1wf6xLHbGjE38L3hGB8s2_R9jEWcXsZBa/view?usp=drivesdk",
     },
   ];
+        setPublications(hardcodedPublications);
+    }, []);
 
-  useEffect(() => {
-    // TODO: replace with backend fetch
-    setPublications(hardcodedPublications);
-  }, []);
 
-  const filteredPublications = publications.filter((p) =>
+    const filteredPublications = publications.filter((p) =>
     p.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
