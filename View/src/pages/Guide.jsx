@@ -132,18 +132,28 @@ function Guide() {
           {/* Spanish Version */}
           <div className="landslide__video-card">
             <div className="landslide__video-container">
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/2dS2Sisj4GQ?si=Wiu9Rr6NXIPaayEt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/2dS2Sisj4GQ?si=Wiu9Rr6NXIPaayEt" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
             </div>
             <p>Versión en español</p>
           </div>
 
           {/* English Version */}
-          <div className="landslide__video-card">
-            <div className="landslide__video-container">
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/lbHGOz3WXgw?si=me9p18wwXhpuatWI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            {/* English Version */}
+            <div className="landslide__video-card">
+                <div className="landslide__video-container">
+                    <iframe
+                        width="560"
+                        height="315"
+                        src="https://www.youtube.com/embed/lbHGOz3WXgw?si=me9p18wwXhpuatWI"
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+                <p>English Version</p>
             </div>
-            <p>English Version</p>
-          </div>
         </div>
       </div>
 
