@@ -1,4 +1,10 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
+use PDO;
+use PDOException;
+
 class Landslide {
     private $conn;
 
@@ -22,10 +28,7 @@ class Landslide {
             }
             return false;
 
-        } catch (PDOException $e) {
-            error_log("Create Landslide Error: " .$e->getMessage());
-            return false;
-        }
+        } catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     
     // GET LANSLIDE BY ID

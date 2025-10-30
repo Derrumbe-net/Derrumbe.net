@@ -1,4 +1,10 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
+use PDO;
+use PDOException;
+
 class Report {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
@@ -26,7 +32,11 @@ class Report {
             $stmt->bindParam(':reporter_email', $data['reporter_email'], PDO::PARAM_STR);
             $stmt->bindParam(':physical_address', $data['physical_address'], PDO::PARAM_STR);
             $stmt->execute();
-            return $this->conn->lastInsertId();
+            if ($stmt->execute()) {
+                return $this->conn->lastInsertId();
+            } else {
+                return false;
+            }
         }catch(PDOException $e){ error_log($e->getMessage()); return false; }
     }
     

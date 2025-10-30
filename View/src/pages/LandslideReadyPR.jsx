@@ -74,7 +74,7 @@ function LandslideReadyPR() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Accede los Cursos
+        Accede los Cursos 
       </a>
 
       <h3 className="landslideReady__module-label">

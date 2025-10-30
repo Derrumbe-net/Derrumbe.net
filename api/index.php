@@ -1,7 +1,9 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/Config/database.php';
+require __DIR__ . '/./vendor/autoload.php';
+require_once __DIR__ . '/./Config/Database.php';
 use Slim\Factory\AppFactory;
+use DerrumbeNet\Config\Database;
+
 
 $app = AppFactory::create();
 

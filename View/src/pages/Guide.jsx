@@ -47,8 +47,7 @@ function Guide() {
       <p>
         Esta {" "}
         <a href="https://hazards.colorado.edu/uploads/documents/PuertoRico_GuiaDerrumbe_2020.pdf" target="_blank" rel="noopener noreferrer" >guía</a> incluye 16 páginas de 
-        información útil para ciudadanos de la isla que viven en zonas propensas a derrumbes. Para avanzar o retroceder, haga clic o arrastre desde las esquinas del libro.
-        Puede detenerse en cualquier página para leer con calma o ampliar el contenido usando el zoom del navegador.
+        información útil para ciudadanos de la isla que viven en zonas propensas a derrumbes.
       </p>
       <p>
         Para solicitar una versión impresa de la guía, favor de comunicar con nosotros por correo electrónico {" "}
@@ -61,6 +60,10 @@ function Guide() {
       <p>
         English version {" "}
         <a href="https://hazards.colorado.edu/uploads/documents/PuertoRico_LandslideGuide_2020.pdf" target="_blank" rel="noopener noreferrer" >here</a>.
+      </p>
+      <p>
+        Para avanzar o retroceder, haga clic o arrastre desde las esquinas del libro.
+        Puede detenerse en cualquier página para leer con calma o ampliar el contenido usando el zoom del navegador.
       </p>
       
       <div className="guide__flipbook-container">

@@ -1,8 +1,11 @@
 <?php
-require_once __DIR__ . '/../Model/Landslide.php';
+
+namespace DerrumbeNet\Controller;
+
+use DerrumbeNet\Model\Landslide;
 
 class LandslideController {
-    private $landslideModel;
+    private Landslide $landslideModel;
 
     public function __construct($db) {
         $this->landslideModel = new Landslide($db);

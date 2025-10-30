@@ -1,10 +1,15 @@
 <?php
+
+namespace DerrumbeNet\Model;
+
+use PDO;
+use PDOException;
+
 class StationInfo {
     private $conn;
     public function __construct($conn){ $this->conn = $conn; }
 
     // CREATE STATION INFO
-    // TODO: Add ftp_file_path
     public function createStationInfo($data){
         try{
             $stmt = $this->conn->prepare(
@@ -30,10 +35,14 @@ class StationInfo {
             $stmt->bindParam(':wc3', $data['wc3'], PDO::PARAM_STR);
             $stmt->bindParam(':wc4', $data['wc4'], PDO::PARAM_STR);
             $stmt->execute();
-            return $this->conn->lastInsertId();
-        }catch(PDOException $e){ 
-            error_log($e->getMessage()); 
-            return false; 
+            if ($stmt->execute()) {
+                return $this->conn->lastInsertId();
+            } else {
+                return false;
+            }
+        }catch(PDOException $e) {
+            error_log($e->getMessage());
+            return false;
         }
     }
 
@@ -78,9 +87,9 @@ class StationInfo {
             $stmt->bindParam(':wc4', $data['wc4'], PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             return $stmt->execute();
-        }catch(PDOException $e){ 
-            error_log($e->getMessage()); 
-            return false; 
+        }catch(PDOException $e){
+            error_log($e->getMessage());
+            return false;
         }
     }
 

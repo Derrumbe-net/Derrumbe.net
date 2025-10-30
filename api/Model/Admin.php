@@ -1,5 +1,11 @@
 <?php
-require_once __DIR__ . '/../Config/database.php';
+
+namespace DerrumbeNet\Model;
+
+use PDO;
+use PDOStatement;
+
+use DerrumbeNet\Config\Database;
 
 class Admin {
     private $conn;
