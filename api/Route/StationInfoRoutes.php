@@ -13,5 +13,8 @@ return function (App $app, $db) {
         $group->get('/{id}', [$stationInfoController, 'getStation']);
         $group->put('/{id}', [$stationInfoController, 'updateStation']);
         $group->delete('/{id}', [$stationInfoController, 'deleteStation']);
+        $group->get('/files/data', [$stationInfoController, 'getAllStationFilesData']);
+        $group->get('/files/data/{id}', [$stationInfoController, 'getStationFileData']);
+        $group->put('/files/data/{id}/update', [$stationInfoController, 'processStationFileAndUpdate']);
     });
 };
