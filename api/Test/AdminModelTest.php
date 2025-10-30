@@ -1,7 +1,6 @@
 <?php
 
 namespace DerrumbeNet\Test;
-
 use PHPUnit\Framework\TestCase;
 use PDO;
 use PDOStatement;

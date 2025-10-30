@@ -1,9 +1,13 @@
 <?php
+namespace DerrumbeNet\Test;
+use PDOException;
+use PDOStatement;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use DerrumbeNet\Controller\ProjectController;
-use DerrumbeNet\Model\Project; // Model mock is not strictly needed here, but good practice
+use DerrumbeNet\Model\Project;
 
 class ProjectControllerTest extends TestCase
 {

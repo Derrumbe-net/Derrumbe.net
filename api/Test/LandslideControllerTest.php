@@ -1,4 +1,10 @@
 <?php
+
+namespace DerrumbeNet\Test;
+
+use PDOException;
+use PDOStatement;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;

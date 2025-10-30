@@ -17,12 +17,12 @@ $basePath = rtrim(str_ireplace('index.php', '', $_SERVER['SCRIPT_NAME']), '/');
 $app->setBasePath($basePath);
 
 // Load routes
-(require __DIR__ . '/./Route/AdminRoutes.php')($app, $db);
-(require __DIR__ . '/./Route/LandslideRoutes.php')($app, $db);
-(require __DIR__ . '/./Route/PublicationRoutes.php')($app, $db);
-(require __DIR__ . '/./Route/ProjectRoutes.php')($app, $db);
-(require __DIR__ . '/./Route/StationInfoRoutes.php')($app, $db);
-(require __DIR__ . '/./Route/ReportRoutes.php')($app, $db);
+(require __DIR__ . '/Route/AdminRoutes.php')($app, $db);
+(require __DIR__ . '/Route/LandslideRoutes.php')($app, $db);
+(require __DIR__ . '/Route/PublicationRoutes.php')($app, $db);
+(require __DIR__ . '/Route/ProjectRoutes.php')($app, $db);
+(require __DIR__ . '/Route/StationInfoRoutes.php')($app, $db);
+(require __DIR__ . '/Route/ReportRoutes.php')($app, $db);
 
 // Error handling middleware
 $app->addErrorMiddleware(true, true, true);

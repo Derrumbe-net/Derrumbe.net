@@ -1,5 +1,9 @@
 <?php
+namespace DerrumbeNet\Test;
 
+use PDOException;
+use PDOStatement;
+use PDO;
 use PHPUnit\Framework\TestCase;
 use DerrumbeNet\Model\StationInfo;
 
