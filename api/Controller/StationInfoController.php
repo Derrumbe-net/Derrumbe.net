@@ -1,27 +1,6 @@
 <?php
 require_once __DIR__ . '/../Model/StationInfo.php';
 
-
-function prettyPrintDatRows(array $rows, $limit = 10) {
-    echo "[INFO] Displaying first $limit rows of data:\n\n";
-
-    $count = 0;
-    foreach ($rows as $row) {
-        $count++;
-        echo "Row #$count:\n";
-        foreach ($row as $col => $value) {
-            $colName = $col === "" ? "(empty key)" : $col;
-            echo "  $colName => $value\n";
-        }
-        echo str_repeat("-", 40) . "\n";
-
-        if ($count >= $limit) break;
-    }
-
-    echo "[INFO] Total rows loaded: " . count($rows) . "\n";
-}
-
-
 class StationInfoController {
     private $stationInfoModel;
     public function __construct($db) { $this->stationInfoModel = new StationInfo($db); }
