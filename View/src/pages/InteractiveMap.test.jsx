@@ -27,6 +27,7 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
+let global;
 global.fetch = vi.fn();
 
 const mockFetch = (url) => {
