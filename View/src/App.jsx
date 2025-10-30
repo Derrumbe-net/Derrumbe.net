@@ -1,16 +1,15 @@
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Outlet } from 'react-router-dom';
+import './App.css';
 
 function App() {
   return (
-    <>
+    <div id="root" style={{ width: '100%', overflowX: 'hidden' }}>
       <Navbar />
-      <main>
-        <Outlet />
-      </main>
+      <Outlet /> {/* or your routed content */}
       <Footer />
-    </>
+    </div>
   );
 }
 

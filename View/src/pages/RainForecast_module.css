@@ -3,7 +3,6 @@
   background-color: #e3ecdd;
   padding: 3rem 2rem;
   width: 100%;
-  margin-left: calc(-1 * (100vw - 100%) / 2); /* Center-align full viewport */
   font-family: 'Inter', sans-serif;
   overflow: hidden;
 }
