@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import "./Guide_module.css";
+import "../styles/Guide_module.css";
 
 import page1 from "../assets/guide_pages/page1.webp";
 import page2 from "../assets/guide_pages/page2.webp";

@@ -1,4 +1,4 @@
-import "./About_module.css";
+import "../styles/About_module.css";
 import officeMonitors from "../assets/office_monitors.webp";
 import logo from "../assets/PRLHMO_LOGO.svg";
 import coordinatorImage from "../assets/coordinator_professor.webp";

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Projects from './Projects';
+import Projects from '../pages/Projects';
 
 describe('Projects Component', () => {
 

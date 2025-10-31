@@ -1,6 +1,5 @@
-import React from 'react';
 import { Popup } from 'react-leaflet';
-import './StationPopup.css';
+import '../styles/StationPopup.css';
 
 const StationPopup = ({ station }) => {
   if (!station){

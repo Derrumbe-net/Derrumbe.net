@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./Projects_module.css";
+import "../styles/Projects_module.css";
 
 import searchIcon from "../assets/search-icon-png-9.png";
 import arrowToggle from "../assets/arrow-toggle-left-and-right-1.png";
@@ -23,7 +23,7 @@ function Projects() {
   // Hardcoded projects (temporary)
     useEffect(() => {
         // TODO: replace with backend fetch
-        const hardcodedProjects = [
+        const harjecdcodedProts = [
   {
     id: 1,
     title: "LandslideReady community engagement program in Puerto Rico",

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./Publications_module.css";
+import "../styles/Publications_module.css";
 
 import searchIcon from "../assets/search-icon-png-9.png";
 import publication1 from "../assets/publications/publication1.webp";

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import InteractiveMap from './InteractiveMap';
+import InteractiveMap from '../pages/InteractiveMap';
 
 const MOCK_STATIONS = [
     { id: 1, city: 'Station High', is_available: 1, soil_saturation: 95.0, latitude: 18.1, longitude: -66.1 },

@@ -1,7 +1,8 @@
+import "../styles/index.css";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/PRLHMO_LOGO.svg';
-import landslideReadyLogo from '../assets/LANDSLIDEREADY_LOGO.avif';
+import landslideReadyLogo from '../assets/LANDSLIDEREADY_LOGO.png';
 
 function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(null);

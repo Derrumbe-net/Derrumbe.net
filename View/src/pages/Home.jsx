@@ -1,4 +1,4 @@
-import "./Home_module.css";
+import "../styles/Home_module.css";
 import { Link } from "react-router-dom";
 import heroImage from '../assets/landing_page_background.webp';
 import mapPreview from '../assets/interactive_map_preview.webp';

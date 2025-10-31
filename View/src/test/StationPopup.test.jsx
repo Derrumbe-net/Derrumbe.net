@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import StationPopup from './StationPopup';
+import StationPopup from '../components/StationPopup';
 
 vi.mock('react-leaflet', () => ({
     Popup: ({ children }) => <div data-testid="mock-popup">{children}</div>,

@@ -1,4 +1,4 @@
-import './RainForecast_module.css';
+import '../styles/RainForecast_module.css';
 
 function RainForecast() {
   return (

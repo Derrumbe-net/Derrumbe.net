@@ -1,4 +1,3 @@
-import React from 'react';
 import { Popup } from 'react-leaflet';
 
 const LandslidePopup = ({ landslide }) => {

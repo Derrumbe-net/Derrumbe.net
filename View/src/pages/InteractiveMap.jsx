@@ -1,15 +1,17 @@
 import 'leaflet/dist/leaflet.css';
-import './InteractiveMap.css';
-import React, { useEffect, useState } from "react";
+import '../styles/InteractiveMap.css';
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl, useMap, Marker } from 'react-leaflet';
 import * as EL from 'esri-leaflet';
-import LandslideLogo from '../assets/Landslide_Hazard_Mitigation_Logo.avif';
+import LandslideLogo from '../assets/PRLHMO_LOGO.svg';
 import StationPopup from '../components/StationPopup';
 import LandslidePopup from '../components/LandslidePopup';
+import GreenPinIcon from '../assets/green-location-pin.png';
 import L from 'leaflet';
+import MapMenu from "../components/MapMenu.jsx";
 
-const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
-const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
+const BASE_STATIONS_URL = "http://localhost:8080/api/stations"
+const BASE_LANDSLIDES_URL = "http://localhost:8080/api/landslides";
 
 const Disclaimer = ({ onAgree }) => {
     return (
@@ -31,31 +33,37 @@ const Disclaimer = ({ onAgree }) => {
 };
 
 const EsriOverlays = () => {
-    const map = useMap();
-    useEffect(() => {
-        const hillshade = EL.tiledMapLayer({
+  const map = useMap();
+  useEffect(() => {
+    const hillshade = EL.tiledMapLayer({
             url: 'https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Hillshade_Puerto_Rico/MapServer',
-            opacity: 0.5,
-        }).addTo(map);
+      opacity: 0.5,
+    }).addTo(map);
 
-        const municipalities = EL.featureLayer({
+    const municipalities = EL.featureLayer({
             url: 'https://services5.arcgis.com/TQ9qkk0dURXSP7LQ/arcgis/rest/services/LIMITES_LEGALES_MUNICIPIOS/FeatureServer/0',
             style: () => ({ color: 'black', weight: 1, fillOpacity: 0 }),
-        }).addTo(map);
+    }).addTo(map);
 
-        const precip = EL.imageMapLayer({
+    const precip = EL.imageMapLayer({
             url: 'https://mapservices.weather.noaa.gov/raster/rest/services/obs/mrms_qpe/ImageServer',
-            opacity: 0.5,
+      opacity: 0.5,
             renderingRule: { rasterFunction: 'rft_12hr' },
-        }).addTo(map);
+    }).addTo(map);
 
-        return () => {
+    const susceptibility = EL.tiledMapLayer({
+        url: "https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Susceptibilidad_Derrumbe_PR/MapServer",
+        opacity: 0.5,
+    }).addTo(map);
+
+    return () => {
             map.removeLayer(hillshade);
             map.removeLayer(municipalities);
             map.removeLayer(precip);
-        };
-    }, [map]);
-    return null;
+            map.removeLayer(susceptibility);
+    };
+  }, [map]);
+  return null;
 };
 
 const PopulateStations = () => {
@@ -121,43 +129,31 @@ const PopulateStations = () => {
 }
 
 const createLandslideIcon = () => {
-    const iconHtml = `
-    <div style="
-      background-color: #dc2626; /* Red color */
-      width: 20px; 
-      height: 20px; 
-      border-radius: 50%; 
-      border: 3px solid #7f1d1d; /* Darker red border */
-      box-shadow: 0 0 5px rgba(0,0,0,0.5);
-    "></div>
-  `;
-
-    return L.divIcon({
-        html: iconHtml,
-        className: '',
-        iconSize: [26, 26],
-        iconAnchor: [13, 13],
-    });
+  return L.icon({
+    iconUrl: GreenPinIcon,
+    iconSize: [30, 40],        // Adjust size as needed
+    iconAnchor: [15, 30],      // Bottom center of the icon
+    popupAnchor: [0, -10]      // Popup appears above the pin
+  });
 };
 
-const YearFilter = ({ selectedYear, availableYears, onYearChange }) => {
-    return (
-        <div className="year-filter-container">
-            <label htmlFor="year-select">Filter Landslides by Year:</label>
-            <select id="year-select" value={selectedYear} onChange={onYearChange}>
-                <option value="all">All Years</option>
-                {availableYears.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                ))}
-            </select>
-        </div>
-    );
-}
 
-const PopulateLandslides = () => {
+// const YearFilter = ({ selectedYear, availableYears, onYearChange }) => {
+//     return (
+//         <div className="year-filter-container">
+//             <label htmlFor="year-select">Filter Landslides by Year:</label>
+//             <select id="year-select" value={selectedYear} onChange={onYearChange}>
+//                 <option value="all">All Years</option>
+//                 {availableYears.map(year => (
+//                     <option key={year} value={year}>{year}</option>
+//                 ))}
+//             </select>
+//         </div>
+//     );
+// }
+
+const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
     const [allLandslides, setAllLandslides] = useState([]);
-    const [availableYears, setAvailableYears] = useState([]);
-    const [selectedYear, setSelectedYear] = useState('all');
 
     const customIcon = createLandslideIcon();
 
@@ -188,9 +184,9 @@ const PopulateLandslides = () => {
             });
     }, []);
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
-    };
+    // const handleYearChange = (e) => {
+    //     setSelectedYear(e.target.value);
+    // };
 
     const filteredLandslides = allLandslides.filter(landslide => {
         if (selectedYear === 'all') {
@@ -204,11 +200,11 @@ const PopulateLandslides = () => {
 
     return (
         <>
-            <YearFilter
+            {/* <YearFilter
                 selectedYear={selectedYear}
                 availableYears={availableYears}
                 onYearChange={handleYearChange}
-            />
+            /> */}
 
             {filteredLandslides.map(landslide => (
                 <Marker
@@ -228,60 +224,84 @@ const AddLegend = () => {
         <div className="legend-container">
             <div className="legend-item">
                 <span className="saturation-marker low"></span>
-                0-80%
+                <p> 0-80% </p>
             </div>
             <div className="legend-item">
                 <span className="saturation-marker medium"></span>
-                80-90%
+                <p>80-90%</p>
             </div>
             <div className="legend-item">
                 <span className="saturation-marker high"></span>
-                90-100%
+                <p>90-100%</p>
             </div>
         </div>
     );
 }
 
 export default function InteractiveMap() {
-    const center = [18.220833, -66.420149];
+  const center = [18.220833, -66.420149];
+  const [showStations, setShowStations] = useState(true);
+  const [selectedYear, setSelectedYear] = useState("all");
+  const [availableYears, setAvailableYears] = useState([]);
+  
 
-    const [showDisclaimer, setShowDisclaimer] = useState(
-        localStorage.getItem('disclaimerAccepted') !== 'true'
-    );
+  const [showDisclaimer, setShowDisclaimer] = useState(
+    localStorage.getItem('disclaimerAccepted') !== 'true'
+  );
 
-    const handleAgree = () => {
-        localStorage.setItem('disclaimerAccepted', 'true');
-        setShowDisclaimer(false);
-    };
-    return (
-        <main>
-            {showDisclaimer && <Disclaimer onAgree={handleAgree} />}
-            <div className="map-label">SOIL SATURATION PERCENTAGE</div>
-            <MapContainer
-                id="map"
-                center={center}
-                zoom={10}
-                minZoom={7}
-                maxZoom={18}
-                scrollWheelZoom={false}
-                zoomControl={false}
-                style={{ height: '100vh', width: '100%' }}
-            >
-                <TileLayer
-                    url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    attribution="Tiles © Esri"
-                />
+  const handleAgree = () => {
+    localStorage.setItem('disclaimerAccepted', 'true');
+    setShowDisclaimer(false);
+  };
 
-                <ZoomControl position="topleft" />
-                <EsriOverlays />
-                <PopulateStations />
-                <PopulateLandslides />
-                <AddLegend/>
+  // Toggle handlers
+  const toggleStations = () => setShowStations(v => !v);
 
-                <div className="logo-container">
-                    <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
-                </div>
-            </MapContainer>
-        </main>
-    );
+  return (
+    <main>
+      {showDisclaimer && <Disclaimer onAgree={handleAgree} />}
+      <div className="map-label">SOIL SATURATION PERCENTAGE</div>
+      <MapContainer
+        id="map"
+        center={center}
+        zoom={10}
+        minZoom={7}
+        maxZoom={18}
+        scrollWheelZoom={false}
+        zoomControl={false}
+        style={{ height: '100vh', width: '100%' }}
+      >
+        <TileLayer
+          url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles © Esri"
+        />
+
+        <MapMenu
+          showStations={showStations}
+          onToggleStations={toggleStations}
+          availableYears={availableYears}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+          setAvailableYears={setAvailableYears}
+        />
+
+
+        <ZoomControl position="topright" />
+        <EsriOverlays />
+        
+        {showStations && <PopulateStations />}
+
+        <PopulateLandslides
+          selectedYear={selectedYear}
+          setAvailableYears={setAvailableYears}
+        />
+
+        <AddLegend/>
+
+        <div className="logo-container">
+          <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
+        </div>
+      </MapContainer>
+    </main>
+  );
 }

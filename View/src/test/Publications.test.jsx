@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import Publications from './Publications';
+import Publications from '../pages/Publications';
 
 describe('Publications Component', () => {
 
