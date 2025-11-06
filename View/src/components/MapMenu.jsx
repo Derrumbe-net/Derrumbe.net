@@ -13,7 +13,6 @@ export default function MapMenu({
   availableYears,
   selectedYear,
   onYearChange,
-  setAvailableYears
 }) {
   const [activeMenu, setActiveMenu] = useState(null); // null | 'layers' | 'history'
 

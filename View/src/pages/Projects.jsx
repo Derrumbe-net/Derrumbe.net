@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import "../styles/Projects_module.css";
 
 import searchIcon from "../assets/search-icon-png-9.png";
-import arrowToggle from "../assets/arrow-toggle-left-and-right-1.png";
 
 // 🖼️ Local images
 import actualproject1 from "../assets/projects/proyecto actual 1.webp";

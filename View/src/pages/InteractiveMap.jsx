@@ -202,7 +202,7 @@ const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
             .catch((err) => {
                 console.error("API Fetch Error:", err);
             });
-    }, []);
+    },  [setAvailableYears]);
 
     // const handleYearChange = (e) => {
     //     setSelectedYear(e.target.value);
