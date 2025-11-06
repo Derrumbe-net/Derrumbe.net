@@ -10,8 +10,8 @@ import GreenPinIcon from '../assets/green-location-pin.png';
 import L from 'leaflet';
 import MapMenu from "../components/MapMenu.jsx";
 
-const BASE_STATIONS_URL = "http://localhost:8080/api/stations"
-const BASE_LANDSLIDES_URL = "http://localhost:8080/api/landslides";
+const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
+const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
 
 const Disclaimer = ({ onAgree }) => {
     return (
