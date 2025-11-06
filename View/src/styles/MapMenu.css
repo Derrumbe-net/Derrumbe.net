@@ -48,8 +48,8 @@
 
 /* Active state — makes icon appear greenish */
 .icon-btn.active .menu-icon {
-  filter: brightness(0) saturate(100%) invert(75%) sepia(77%) saturate(433%) hue-rotate(85deg)
-    brightness(93%) contrast(90%);
+  filter: brightness(0) saturate(100%) invert(32%) sepia(99%) saturate(558%) 
+    hue-rotate(93deg) brightness(95%) contrast(90%);
 }
 
 /* --- Expanded Filters --- */
@@ -72,7 +72,7 @@
 }
 
 .filters input[type="checkbox"] {
-  accent-color: #32cd32;
+  accent-color: white;
   width: 25px;
   height: 25px;
   cursor: pointer;

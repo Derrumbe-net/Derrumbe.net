@@ -6,6 +6,10 @@ import historyIcon from "../assets/history-icon.png";
 export default function MapMenu({
   showStations,
   onToggleStations,
+  showPrecip,
+  onTogglePrecip,
+  showSusceptibility,
+  onToggleSusceptibility,
   availableYears,
   selectedYear,
   onYearChange,
@@ -51,8 +55,27 @@ export default function MapMenu({
             />
             Stations
           </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={showPrecip}
+              onChange={onTogglePrecip}
+            />
+            Precipitation Layer
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={showSusceptibility}
+              onChange={onToggleSusceptibility}
+            />
+            Susceptibility Layer
+          </label>
         </div>
       )}
+
 
       {activeMenu === "history" && (
         <div className="filters">

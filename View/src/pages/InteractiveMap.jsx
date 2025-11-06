@@ -32,37 +32,57 @@ const Disclaimer = ({ onAgree }) => {
     );
 };
 
-const EsriOverlays = () => {
+const EsriOverlays = ({ showPrecip, showSusceptibility }) => {
   const map = useMap();
+
   useEffect(() => {
+    // 🟫 Add base layers only once (hillshade + municipalities)
     const hillshade = EL.tiledMapLayer({
-            url: 'https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Hillshade_Puerto_Rico/MapServer',
+      url: 'https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Hillshade_Puerto_Rico/MapServer',
       opacity: 0.5,
     }).addTo(map);
 
     const municipalities = EL.featureLayer({
-            url: 'https://services5.arcgis.com/TQ9qkk0dURXSP7LQ/arcgis/rest/services/LIMITES_LEGALES_MUNICIPIOS/FeatureServer/0',
-            style: () => ({ color: 'black', weight: 1, fillOpacity: 0 }),
+      url: 'https://services5.arcgis.com/TQ9qkk0dURXSP7LQ/arcgis/rest/services/LIMITES_LEGALES_MUNICIPIOS/FeatureServer/0',
+      style: () => ({ color: 'black', weight: 1, fillOpacity: 0 }),
     }).addTo(map);
 
-    const precip = EL.imageMapLayer({
-            url: 'https://mapservices.weather.noaa.gov/raster/rest/services/obs/mrms_qpe/ImageServer',
-      opacity: 0.5,
-            renderingRule: { rasterFunction: 'rft_12hr' },
-    }).addTo(map);
-
-    const susceptibility = EL.tiledMapLayer({
-        url: "https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Susceptibilidad_Derrumbe_PR/MapServer",
-        opacity: 0.5,
-    }).addTo(map);
-
+    // Cleanup only once (when component unmounts)
     return () => {
-            map.removeLayer(hillshade);
-            map.removeLayer(municipalities);
-            map.removeLayer(precip);
-            map.removeLayer(susceptibility);
+      map.removeLayer(hillshade);
+      map.removeLayer(municipalities);
     };
   }, [map]);
+
+  // 🟩 Separate effect: toggle precipitation layer
+  useEffect(() => {
+    let precipLayer;
+    if (showPrecip) {
+      precipLayer = EL.imageMapLayer({
+        url: 'https://mapservices.weather.noaa.gov/raster/rest/services/obs/mrms_qpe/ImageServer',
+        opacity: 0.5,
+        renderingRule: { rasterFunction: 'rft_12hr' },
+      }).addTo(map);
+    }
+    return () => {
+      if (precipLayer) map.removeLayer(precipLayer);
+    };
+  }, [map, showPrecip]);
+
+  // 🟨 Separate effect: toggle susceptibility layer
+  useEffect(() => {
+    let susceptibilityLayer;
+    if (showSusceptibility) {
+      susceptibilityLayer = EL.tiledMapLayer({
+        url: "https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Susceptibilidad_Derrumbe_PR/MapServer",
+        opacity: 0.5,
+      }).addTo(map);
+    }
+    return () => {
+      if (susceptibilityLayer) map.removeLayer(susceptibilityLayer);
+    };
+  }, [map, showSusceptibility]);
+
   return null;
 };
 
@@ -243,7 +263,8 @@ export default function InteractiveMap() {
   const [showStations, setShowStations] = useState(true);
   const [selectedYear, setSelectedYear] = useState("all");
   const [availableYears, setAvailableYears] = useState([]);
-  
+  const [showPrecip, setShowPrecip] = useState(true);
+  const [showSusceptibility, setShowSusceptibility] = useState(false);
 
   const [showDisclaimer, setShowDisclaimer] = useState(
     localStorage.getItem('disclaimerAccepted') !== 'true'
@@ -256,6 +277,9 @@ export default function InteractiveMap() {
 
   // Toggle handlers
   const toggleStations = () => setShowStations(v => !v);
+  const togglePrecip = () => setShowPrecip(v => !v);
+  const toggleSusceptibility = () => setShowSusceptibility(v => !v);
+
 
   return (
     <main>
@@ -277,17 +301,24 @@ export default function InteractiveMap() {
         />
 
         <MapMenu
-          showStations={showStations}
-          onToggleStations={toggleStations}
-          availableYears={availableYears}
-          selectedYear={selectedYear}
-          onYearChange={setSelectedYear}
-          setAvailableYears={setAvailableYears}
+            showStations={showStations}
+            onToggleStations={toggleStations}
+            showPrecip={showPrecip}
+            onTogglePrecip={togglePrecip}
+            showSusceptibility={showSusceptibility}
+            onToggleSusceptibility={toggleSusceptibility}
+            availableYears={availableYears}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+            setAvailableYears={setAvailableYears}
         />
 
+        <EsriOverlays
+        showPrecip={showPrecip}
+        showSusceptibility={showSusceptibility}
+        />
 
         <ZoomControl position="topright" />
-        <EsriOverlays />
         
         {showStations && <PopulateStations />}
 
