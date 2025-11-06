@@ -1,0 +1,80 @@
+.landslideReady {
+  background-color: #DFE8DA;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.landslideReady__municipios-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #DFE8DA;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landslideReady__municipios-left {
+  flex: 1 1 550px;
+  max-width: 600px;
+}
+
+.landslideReady__municipios-left h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.landslideReady__municipios-left p {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.landslideReady__subheader {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.landslideReady__map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem auto;
+  width: 100%;
+  max-width: 500px;
+}
+
+.landslideReady__cycle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem auto;
+  width: 100%;
+  max-width: 450px;
+}
+
+.landslideReady__municipios-right {
+  flex: 1 1 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.landslideReady__municipios-right img.landslideReady__group-pics {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: cover;
+  padding-top: 90px;
+  height: 905px;
+  padding-left: 30px;
+}

@@ -1,0 +1,126 @@
+.projects-page {
+  background-color: #DFE8DA;
+  font-family: 'Inter', sans-serif;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  color: #000;
+}
+
+.projects-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 1rem auto;
+  margin-bottom: 1rem;
+  max-width: 1000px;
+  text-align: left;
+}
+
+.projects-intro,
+.projects-subintro {
+  font-size: 1rem;
+  max-width: 1000px;
+  line-height: 1.6;
+  margin: 0.8rem auto;
+  text-align: justify;
+}
+
+.projects-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 1.5rem auto; 
+  padding-top: 1em; 
+  border-top: 1px solid #000;
+}
+
+.projects-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 2rem auto 1.5rem auto;
+  border-top: 1px solid #000;
+  gap: 1rem;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  background: #f7f8f6;
+  width: 35%;
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 0.5rem;
+  object-fit: contain;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+}
+
+.filter-dropdown {
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.projects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.project-card {
+  background: transparent;
+  border-radius: 10px;
+  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.project-image {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: justify;
+}
+
+.project-years {
+  font-weight: 300;
+  font-size: 1.3rem;
+  margin: 0.3rem 0 0.8rem 0;
+}
+
+.project-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: justify;
+}
