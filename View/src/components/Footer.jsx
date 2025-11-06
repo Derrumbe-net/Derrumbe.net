@@ -1,3 +1,4 @@
+import "../styles/index.css";
 import logo from '../assets/PRLHMO_LOGO.svg';
 import facebook from '../assets/FACEBOOK_LOGO.svg';
 

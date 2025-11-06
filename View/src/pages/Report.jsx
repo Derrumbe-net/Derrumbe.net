@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./Report_module.css";
+import "../styles/Report_module.css";
 
 import officeLogo from "../assets/PRLHMO_LOGO.svg";
 

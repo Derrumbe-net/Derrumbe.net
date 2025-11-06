@@ -6,5 +6,6 @@ html, body {
   max-width: 100%;
   overflow-x: hidden;
   border: none;
+  background-color: #DFE8DA;
   font-family: 'Inter', sans-serif;
 }

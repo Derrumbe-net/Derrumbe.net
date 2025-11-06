@@ -1,7 +1,8 @@
+import "../styles/index.css";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/PRLHMO_LOGO.svg';
-import landslideReadyLogo from '../assets/LANDSLIDEREADY_LOGO.avif';
+import landslideReadyLogo from '../assets/LANDSLIDEREADY_LOGO.png';
 
 function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -59,7 +60,7 @@ function Navbar() {
             {openDropdown === 'monitoreo' && (
               <ul className="nav__menu">
                 <li><Link to="/mapa-interactivo" className="nav__sublink">Mapa Interactivo</Link></li>
-                <li><Link to="/estaciones" className="nav__sublink">Estaciones</Link></li>
+                {/* <li><Link to="/estaciones" className="nav__sublink">Estaciones</Link></li> */}
                 <li><Link to="/pronostico-lluvia" className="nav__sublink">Pronóstico de lluvia</Link></li>
               </ul>
             )}
@@ -76,7 +77,7 @@ function Navbar() {
             {openDropdown === 'recursos' && (
               <ul className="nav__menu">
                 <li><Link to="/guia-deslizamientos" className="nav__sublink">Guía sobre Deslizamientos</Link></li>
-                <li><Link to="/mapa-susceptibilidad" className="nav__sublink">Mapa de Susceptibilidad</Link></li>
+                {/* <li><Link to="/mapa-susceptibilidad" className="nav__sublink">Mapa de Susceptibilidad</Link></li> */}
               </ul>
             )}
           </li>

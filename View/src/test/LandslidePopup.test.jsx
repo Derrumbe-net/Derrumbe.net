@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import LandslidePopup from './LandslidePopup';
+import LandslidePopup from '../components/LandslidePopup';
 
 vi.mock('react-leaflet', () => ({
     Popup: ({ children }) => <div data-testid="mock-popup">{children}</div>,

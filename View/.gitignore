@@ -25,3 +25,7 @@ dist-ssr
 
 # Packages
 package-lock.json
+composer.lock
+composer.phar
+
+.env

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Report from './Report';
+import Report from '../pages/Report';
 
 const viewEvents = {};
 
@@ -137,7 +137,10 @@ describe('Report Component', () => {
 
         const manualCoords = { latitude: 18.16, longitude: -66.72 };
         expect(viewEvents.click).toBeInstanceOf(Function);
-        viewEvents.click({ mapPoint: manualCoords });
+
+        act(() => {
+            viewEvents.click({ mapPoint: manualCoords });
+        });
 
         const fileInput = screen.getByLabelText(/or Select Files to Upload/i);
         fireEvent.change(fileInput, { target: { files: [mockFile] } });

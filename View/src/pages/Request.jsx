@@ -1,4 +1,4 @@
-import "./Request_module.css";
+import "../styles/Request_module.css";
 import educationalTalk from "../assets/educational_talk.webp";
 import { useState } from "react";
 

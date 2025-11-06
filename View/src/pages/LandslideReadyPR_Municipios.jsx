@@ -1,4 +1,4 @@
-import './LandslideReadyPR_Municipios_module.css';
+import '../styles/LandslideReadyPR_Municipios_module.css';
 import map from '../assets/municipality_map.webp';
 import cycle from '../assets/landslideready_cycle.webp';
 import groupPics from '../assets/landslideready_pictures.webp';

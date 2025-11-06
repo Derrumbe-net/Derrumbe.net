@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import LandslideReadyPR_Individuos from './LandslideReadyPR_Individuos';
+import LandslideReadyPR_Individuos from '../pages/LandslideReadyPR_Individuos';
 
 describe('LandslideReadyPR_Individuos Component', () => {
 
