@@ -261,7 +261,7 @@ const AddLegend = () => {
 export default function InteractiveMap() {
   const center = [18.220833, -66.420149];
   const [showStations, setShowStations] = useState(true);
-  const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedYear, setSelectedYear] = useState("2025");
   const [availableYears, setAvailableYears] = useState([]);
   const [showPrecip, setShowPrecip] = useState(true);
   const [showSusceptibility, setShowSusceptibility] = useState(false);
