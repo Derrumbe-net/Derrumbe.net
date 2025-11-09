@@ -36,7 +36,6 @@ const EsriOverlays = ({ showPrecip, showSusceptibility }) => {
   const map = useMap();
 
   useEffect(() => {
-    // 🟫 Add base layers only once (hillshade + municipalities)
     const hillshade = EL.tiledMapLayer({
       url: 'https://tiles.arcgis.com/tiles/TQ9qkk0dURXSP7LQ/arcgis/rest/services/Hillshade_Puerto_Rico/MapServer',
       opacity: 0.5,
@@ -47,14 +46,12 @@ const EsriOverlays = ({ showPrecip, showSusceptibility }) => {
       style: () => ({ color: 'black', weight: 1, fillOpacity: 0 }),
     }).addTo(map);
 
-    // Cleanup only once (when component unmounts)
     return () => {
       map.removeLayer(hillshade);
       map.removeLayer(municipalities);
     };
   }, [map]);
 
-  // 🟩 Separate effect: toggle precipitation layer
   useEffect(() => {
     let precipLayer;
     if (showPrecip) {
@@ -69,7 +66,6 @@ const EsriOverlays = ({ showPrecip, showSusceptibility }) => {
     };
   }, [map, showPrecip]);
 
-  // 🟨 Separate effect: toggle susceptibility layer
   useEffect(() => {
     let susceptibilityLayer;
     if (showSusceptibility) {
@@ -157,24 +153,8 @@ const createLandslideIcon = () => {
   });
 };
 
-
-// const YearFilter = ({ selectedYear, availableYears, onYearChange }) => {
-//     return (
-//         <div className="year-filter-container">
-//             <label htmlFor="year-select">Filter Landslides by Year:</label>
-//             <select id="year-select" value={selectedYear} onChange={onYearChange}>
-//                 <option value="all">All Years</option>
-//                 {availableYears.map(year => (
-//                     <option key={year} value={year}>{year}</option>
-//                 ))}
-//             </select>
-//         </div>
-//     );
-// }
-
 const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
     const [allLandslides, setAllLandslides] = useState([]);
-
     const customIcon = createLandslideIcon();
 
     useEffect(() => {
@@ -204,10 +184,6 @@ const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
             });
     },  [setAvailableYears]);
 
-    // const handleYearChange = (e) => {
-    //     setSelectedYear(e.target.value);
-    // };
-
     const filteredLandslides = allLandslides.filter(landslide => {
         if (selectedYear === 'all') {
             return true;
@@ -220,12 +196,6 @@ const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
 
     return (
         <>
-            {/* <YearFilter
-                selectedYear={selectedYear}
-                availableYears={availableYears}
-                onYearChange={handleYearChange}
-            /> */}
-
             {filteredLandslides.map(landslide => (
                 <Marker
                     key={landslide.landslide_id}
@@ -275,11 +245,9 @@ export default function InteractiveMap() {
     setShowDisclaimer(false);
   };
 
-  // Toggle handlers
   const toggleStations = () => setShowStations(v => !v);
   const togglePrecip = () => setShowPrecip(v => !v);
   const toggleSusceptibility = () => setShowSusceptibility(v => !v);
-
 
   return (
     <main>

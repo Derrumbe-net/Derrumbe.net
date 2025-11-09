@@ -3,7 +3,7 @@ import "../styles/Projects_module.css";
 
 import searchIcon from "../assets/search-icon-png-9.png";
 
-// 🖼️ Local images
+// Local images
 import actualproject1 from "../assets/projects/proyecto actual 1.webp";
 import actualproject2 from "../assets/projects/proyecto actual 2.webp";
 import actualproject3 from "../assets/projects/proyecto actual 3.webp";
@@ -15,17 +15,17 @@ import pastproject2 from "../assets/projects/proyecto pasado 2.webp";
 import pastproject3 from "../assets/projects/proyecto pasado 3.webp";
 import pastproject4 from "../assets/projects/proyecto pasado 4.webp";
 
-// 🧩 Map backend project_id to local images
+// Map backend project_id to local images
 const imageMap = {
-  1: pastproject1, // Evaluation of the Soil Mass Movement Risk Rating
-  2: pastproject2, // Quantifying controls on weathering
-  3: pastproject3, // Track I Center Catalyst
-  4: pastproject4, // RAPID Hurricane Fiona
-  6: actualproject1, // LandslideReady program
-  7: actualproject2, // Climate Adaptation Partnerships
-  8: actualproject3, // Landslide Hazard Reduction Project
-  10: actualproject4, // Hazard Science and Risk Communication
-  12: actualproject5, // Critical Zone Controls
+  1: pastproject1, 
+  2: pastproject2,
+  3: pastproject3,
+  4: pastproject4,
+  6: actualproject1,
+  7: actualproject2,
+  8: actualproject3,
+  10: actualproject4,
+  12: actualproject5,
 };
 
 function Projects() {
@@ -42,7 +42,7 @@ function Projects() {
 
         const data = await response.json();
 
-        // Normalize backend data + attach local images
+        // Backend data + local images
         const formattedData = data.map((item) => ({
           id: item.project_id,
           title: item.title,
@@ -88,7 +88,6 @@ function Projects() {
       </p>
 
       <div className="projects-controls">
-        {/* Search Bar */}
         <div className="search-container">
           <input
             type="text"
@@ -99,7 +98,6 @@ function Projects() {
           <img src={searchIcon} alt="Search" className="search-icon" />
         </div>
 
-        {/* Filter Dropdown */}
         <div className="filter-container">
           <select
             className="filter-dropdown"
