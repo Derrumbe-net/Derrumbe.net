@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+// Main webpage
 import App from './App';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -15,7 +16,21 @@ import Request from './pages/Request'
 import Stations from './pages/Stations';
 import SusceptibilityMap from './pages/SusceptibilityMap';
 
+// CMS (Admin Dashboard)
+import CMSLayout from './cms/layout/CMSLayout';
+import CMSDashboard from './cms/pages/CMSDashboard';
+import CMSLogin from './cms/pages/CMSLogin';
+import CMSSignUp from './cms/pages/CMSSignUp';
+import CMSProjects from './cms/pages/CMSProjects';
+import CMSPublications from './cms/pages/CMSPublications';
+import CMSReports from './cms/pages/CMSReports';
+import CMSStations from './cms/pages/CMSStations';
+
+// Auth protection
+import ProtectedRoute from './cms/layout/ProtectedRoute';
+
 const router = createBrowserRouter([
+  // Main webpage routes
   {
     path: '/',
     element: <App />,
@@ -33,6 +48,31 @@ const router = createBrowserRouter([
       { path: 'solicitud', element: <Request />},
       { path: 'landslideready-individuos', element: <LandslideReadyPR_Individuos /> },
       { path: 'landslideready-municipios', element: <LandslideReadyPR_Municipios /> },
+    ],
+  },
+
+  // CMS routes
+  {
+    path: '/cms/login',
+    element: <CMSLogin />,
+  },
+  {
+    path: '/cms/signup',
+    element: <CMSSignUp />,
+  },
+  {
+    path: '/cms',
+    element: (
+      <ProtectedRoute>
+        <CMSLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <CMSDashboard /> },
+      { path: 'proyectos', element: <CMSProjects /> },
+      { path: 'publicaciones', element: <CMSPublications /> },
+      { path: 'reportes', element: <CMSReports /> },
+      { path: 'estaciones', element: <CMSStations /> },
     ],
   },
 ]);
