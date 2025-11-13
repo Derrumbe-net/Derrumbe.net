@@ -28,6 +28,15 @@ export default function Sidebar() {
       {/* ===== Navigation Links ===== */}
       <nav className="cms-sidebar__nav">
         <NavLink
+          to="/cms"
+          end
+          className={({ isActive }) =>
+            `cms-link ${isActive ? "cms-link--active" : ""}`
+          }
+        >
+          Dashboard
+        </NavLink>
+        <NavLink
           to="/cms/proyectos"
           className={({ isActive }) =>
             `cms-link ${isActive ? "cms-link--active" : ""}`
