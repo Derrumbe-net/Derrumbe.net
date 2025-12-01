@@ -10,10 +10,19 @@ import GreenPinIcon from '../assets/green-location-pin.png';
 import L from 'leaflet';
 import MapMenu from "../components/MapMenu.jsx";
 
-// const BASE_STATIONS_URL = "http://localhost:8080/api/stations" // CHANGE BACK
-// const BASE_LANDSLIDES_URL = "http://localhost:8080/api/landslides"; // CHANGE BACK
-const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations"
-const BASE_LANDSLIDES_URL = "https://derrumbe-test.derrumbe.net/api/landslides";
+const BASE_DOMAIN = "https://derrumbe-test.derrumbe.net";
+// const BASE_DOMAIN = "http://localhost:8080"; // Toggle for local dev
+
+// $app->get('/stations', ...)
+const BASE_STATIONS_URL = `${BASE_DOMAIN}/api/stations`;
+
+// $app->get('/stations/files/data', ...)
+const BASE_FILES_DATA_URL = `${BASE_DOMAIN}/api/stations/files/data`;
+
+// $app->put('/stations/files/data/{id}/update', ...)
+const BASE_UPDATE_PREFIX = `${BASE_DOMAIN}/api/stations/files/data`;
+
+const BASE_LANDSLIDES_URL = `${BASE_DOMAIN}/api/landslides`;
 
 
 // --- CONSTANTS FOR RADAR ---
@@ -176,8 +185,9 @@ const EsriOverlays = ({ showPrecip, showSusceptibility, showForecast, currentTim
 
 const PopulateStations = ({ showSaturation, showPrecip12hr }) => {
     const [stations, setStations] = useState([]);
+    const [hasCheckedSync, setHasCheckedSync] = useState(false);
 
-    useEffect(() => {
+    const fetchStations = () => {
         fetch(BASE_STATIONS_URL)
             .then((response) => {
                 if (!response.ok) {
@@ -187,7 +197,103 @@ const PopulateStations = ({ showSaturation, showPrecip12hr }) => {
             })
             .then((data) => setStations(data))
             .catch((err) => console.error("API Fetch Error:", err));
+    };
+
+    useEffect(() => {
+        fetchStations();
     }, []);
+
+    const calculateMetricsFromRawData = (rows, stationInfo) => {
+        if (!rows || rows.length === 0) return null;
+
+        const last12 = rows.slice(-12);
+        const totalRain = last12.reduce((acc, row) => {
+            const val = parseFloat(row['Rain_mm_Tot']);
+            return acc + (isNaN(val) ? 0 : val);
+        }, 0);
+
+        const lastRow = rows[rows.length - 1];
+        const wcRatios = [];
+
+        const getValue = (keyPrefix) => {
+            const key = Object.keys(lastRow).find(k => k.toLowerCase().startsWith(keyPrefix));
+            return key ? parseFloat(lastRow[key]) : null;
+        };
+
+        const limits = [stationInfo.wc1, stationInfo.wc2, stationInfo.wc3, stationInfo.wc4];
+
+        limits.forEach((limit, index) => {
+            const val = getValue(`wc${index + 1}`); // looks for wc1, wc2...
+            const max = parseFloat(limit);
+            if (!isNaN(val) && !isNaN(max) && max !== 0) {
+                wcRatios.push(val / max);
+            }
+        });
+
+        let avgSaturation = 0;
+        if (wcRatios.length > 0) {
+            const sumRatio = wcRatios.reduce((a, b) => a + b, 0);
+            avgSaturation = (sumRatio / wcRatios.length) * 100;
+        }
+
+        return {
+            calculatedPrecip: totalRain,
+            calculatedSaturation: avgSaturation
+        };
+    };
+
+    useEffect(() => {
+        if (stations.length > 0 && !hasCheckedSync) {
+            const checkDataConsistency = async () => {
+                try {
+                    const response = await fetch(BASE_FILES_DATA_URL);
+                    if (!response.ok) return;
+
+                    const filesData = await response.json();
+                    const updatesNeeded = [];
+
+                    filesData.forEach(fileRecord => {
+                        const station = stations.find(s => s.station_id === fileRecord.station_id);
+
+                        if (station && fileRecord.data) {
+                            const metrics = calculateMetricsFromRawData(fileRecord.data, station);
+
+                            if (metrics) {
+                                const dbSat = parseFloat(station.soil_saturation || 0);
+                                const dbPrecip = parseFloat(station.precipitation || 0);
+
+                                const calcSat = metrics.calculatedSaturation;
+                                const calcPrecip = metrics.calculatedPrecip;
+
+                                const satDiff = Math.abs(dbSat - calcSat);
+                                const precipDiff = Math.abs(dbPrecip - calcPrecip);
+
+                                if (satDiff > 1.0 || precipDiff > 0.05) {
+                                    console.log(`Update needed for Station ${station.station_id}. Diff - Sat: ${satDiff.toFixed(2)}, Precip: ${precipDiff.toFixed(2)}`);
+                                    updatesNeeded.push(station.station_id);
+                                }
+                            }
+                        }
+                    });
+
+                    if (updatesNeeded.length > 0) {
+                        await Promise.all(updatesNeeded.map(id =>
+                            fetch(`${BASE_UPDATE_PREFIX}/${id}/update`, { method: 'PUT' })
+                        ));
+
+                        fetchStations();
+                    }
+
+                } catch (error) {
+                    console.error("Error checking station consistency:", error);
+                } finally {
+                    setHasCheckedSync(true);
+                }
+            };
+
+            checkDataConsistency();
+        }
+    }, [stations, hasCheckedSync]);
 
     /** SOIL SATURATION ICON **/
     const createSaturationIcon = (saturation) => {
@@ -266,7 +372,7 @@ const PopulateStations = ({ showSaturation, showPrecip12hr }) => {
                     }
                     else if (station.precipitation != null) {
                         icon = createPrecipIcon(station.precipitation);
-                }
+                    } 
                     else {
                         return null; // Only if BOTH are missing (rare case)
                     }
@@ -344,58 +450,104 @@ const PopulateLandslides = ({ selectedYear, setAvailableYears }) => {
 }
 
 const SoilSaturationLegend = () => (
-    <div className="legend-container legend-bottom-right">
-        <div className="legend-title">Soil Saturation</div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#e0c853"}}></span><p>0–80%</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#63b3ff"}}></span><p>80–90%</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#001f57"}}></span><p>90–100%</p></div>
+  <div className="legend-container legend-bottom-right">
+    <div className="legend-title">Soil Saturation</div>
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#e0c853"}}></span>
+      <p>0–80%</p>
     </div>
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#63b3ff"}}></span>
+      <p>80–90%</p>
+    </div>
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#001f57"}}></span>
+      <p>90–100%</p>
+    </div>
+  </div>
 );
 
 const SusceptibilityLegend = () => (
-    <div className="legend-container legend-bottom-right-top">
-        <div className="legend-title">Landslide Susceptibility</div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#C0C0C0"}}></span><p>Low</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#FFFF00"}}></span><p>Moderate</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#FF9900"}}></span><p>High</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#FF0000"}}></span><p>Very High</p></div>
-        <div className="legend-item"><span className="legend-color-box" style={{background:"#0000FF"}}></span><p>Exceptionally High</p></div>
+  <div className="legend-container legend-bottom-right-top">
+    <div className="legend-title">Landslide Susceptibility</div>
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#C0C0C0"}}></span>
+      <p>Low</p>
     </div>
+
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#FFFF00"}}></span>
+      <p>Moderate</p>
+    </div>
+
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#FF9900"}}></span>
+      <p>High</p>
+    </div>
+
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#FF0000"}}></span>
+      <p>Very High</p>
+    </div>
+
+    <div className="legend-item">
+      <span className="legend-color-box" style={{background:"#0000FF"}}></span>
+      <p>Exceptionally High</p>
+    </div>
+  </div>
 );
 
 const PrecipLegend = () => (
-    <div className="legend-container legend-top-left legend-scrollable" >
-        <div className="legend-title">Precipitation (inches)</div>
-        {[
-            ["#9FEAFF", "0.01 - 0.05"], ["#7FD6FF", "0.05 - 0.10"], ["#5FC2FF", "0.10 - 0.15"], ["#0099FF", "0.15 - 0.20"],
-            ["#00CC00", "0.20 - 0.40"], ["#00B200", "0.40 - 0.60"], ["#009900", "0.60 - 0.80"], ["#007F00", "0.80 - 1.00"],
-            ["#FFFF66", "1.00 - 1.25"], ["#FFD24D", "1.25 - 1.50"], ["#FFB733", "1.50 - 1.75"], ["#FF9900", "1.75 - 2.00"],
-            ["#FF6600", "2.00 - 2.50"], ["#FF3300", "2.50 - 3.00"], ["#CC0000", "3.00 - 3.50"], ["#FF3399", "3.50 - 4.00"],
-            ["#FF00FF", "4.00 - 4.50"], ["#CC00CC", "4.50 - 5.00"], ["#990099", "5.00 - 5.50"], ["#660066", "5.50 - 6.00"],
-            ["#330033", "6.00 - 6.50"], ["#3333FF", "6.50 - 7.00"], ["#0000CC", "7.00 - 8.00"], ["#000066", "Above 8.00"],
-        ].map(([color, label]) => (
-            <div className="legend-item" key={label}>
-                <span className="legend-color-box" style={{background: color}}></span>
-                <p>{label}</p>
-            </div>
-        ))}
-    </div>
+  <div className="legend-container legend-top-left legend-scrollable" >
+    <div className="legend-title">Precipitation (inches)</div>
+
+    {[
+      ["#9FEAFF", "0.01 - 0.05"],
+      ["#7FD6FF", "0.05 - 0.10"],
+      ["#5FC2FF", "0.10 - 0.15"],
+      ["#0099FF", "0.15 - 0.20"],
+      ["#00CC00", "0.20 - 0.40"],
+      ["#00B200", "0.40 - 0.60"],
+      ["#009900", "0.60 - 0.80"],
+      ["#007F00", "0.80 - 1.00"],
+      ["#FFFF66", "1.00 - 1.25"],
+      ["#FFD24D", "1.25 - 1.50"],
+      ["#FFB733", "1.50 - 1.75"],
+      ["#FF9900", "1.75 - 2.00"],
+      ["#FF6600", "2.00 - 2.50"],
+      ["#FF3300", "2.50 - 3.00"],
+      ["#CC0000", "3.00 - 3.50"],
+      ["#FF3399", "3.50 - 4.00"],
+      ["#FF00FF", "4.00 - 4.50"],
+      ["#CC00CC", "4.50 - 5.00"],
+      ["#990099", "5.00 - 5.50"],
+      ["#660066", "5.50 - 6.00"],
+      ["#330033", "6.00 - 6.50"],
+      ["#3333FF", "6.50 - 7.00"],
+      ["#0000CC", "7.00 - 8.00"],
+      ["#000066", "Above 8.00"],
+    ].map(([color, label]) => (
+      <div className="legend-item" key={label}>
+        <span className="legend-color-box" style={{background: color}}></span>
+        <p>{label}</p>
+      </div>
+    ))}
+  </div>
 );
 
 
 export default function InteractiveMap() {
-    const center = [18.220833, -66.420149];
-    const [showStations, setShowStations] = useState(true);
-    const [selectedYear, setSelectedYear] = useState("2025");
-    const [availableYears, setAvailableYears] = useState([]);
-    const [showPrecip, setShowPrecip] = useState(false);
-    const [showSusceptibility, setShowSusceptibility] = useState(false);
-    const [showSaturation, setShowSaturation] = useState(true);
-    const [showPrecip12hr, setShowPrecip12hr] = useState(false);
-    const [showSaturationLegend, setShowSaturationLegend] = useState(true);
-    const [showSusceptibilityLegend, setShowSusceptibilityLegend] = useState(false);
-    const [showPrecipLegend, setShowPrecipLegend] = useState(false);
-    const [showForecast, setShowForecast] = useState(true);
+  const center = [18.220833, -66.420149];
+  const [showStations, setShowStations] = useState(true);
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const [availableYears, setAvailableYears] = useState([]);
+  const [showPrecip, setShowPrecip] = useState(true);
+  const [showSusceptibility, setShowSusceptibility] = useState(false);
+  const [showSaturation, setShowSaturation] = useState(true);
+  const [showPrecip12hr, setShowPrecip12hr] = useState(false);
+  const [showSaturationLegend, setShowSaturationLegend] = useState(true);
+  const [showSusceptibilityLegend, setShowSusceptibilityLegend] = useState(false);
+  const [showPrecipLegend, setShowPrecipLegend] = useState(false);
 
     const now = new Date();
     const coeff = 1000 * 60 * 5;
@@ -410,110 +562,103 @@ export default function InteractiveMap() {
         localStorage.getItem('disclaimerAccepted') !== 'true'
     );
 
-    useEffect(() => {
-        let interval;
-        if (showForecast && isPlaying) {
-            interval = setInterval(() => {
-                setCurrentTime(prevTime => {
-                    const nextTime = prevTime + STEP_SIZE;
-                    if (nextTime > radarTimeRange.end) {
-                        return radarTimeRange.start;
-                    }
-                    return nextTime;
-                });
-            }, FRAME_SPEED);
-        }
-        return () => clearInterval(interval);
-    }, [isPlaying, showForecast, radarTimeRange]);
+  const handleAgree = () => {
+    localStorage.setItem('disclaimerAccepted', 'true');
+    setShowDisclaimer(false);
+  };
 
-    const handleSeek = (time) => {
-        const snapped = Math.round((time - radarTimeRange.start) / STEP_SIZE) * STEP_SIZE + radarTimeRange.start;
-        setCurrentTime(snapped);
-    };
+  const toggleStations = () => setShowStations(v => !v);
+  const togglePrecip = () => setShowPrecip(v => !v);
+  const toggleSusceptibility = () => setShowSusceptibility(v => !v);
+  const toggleSaturation = () => {
+    setShowSaturation(true);
+    setShowPrecip12hr(false);
+  };
+  const togglePrecip12hr = () => {
+    setShowPrecip12hr(true);
+    setShowSaturation(false);
+  };
+  const toggleSaturationLegend = () => setShowSaturationLegend(v => !v);
+  const toggleSusceptibilityLegend = () => setShowSusceptibilityLegend(v => !v);
+  const togglePrecipLegend = () => setShowPrecipLegend(v => !v);
 
-    const handleAgree = () => {
-        localStorage.setItem('disclaimerAccepted', 'true');
-        setShowDisclaimer(false);
-    };
 
-    const toggleStations = () => setShowStations(v => !v);
-    const togglePrecip = () => setShowPrecip(v => !v);
-    const toggleSusceptibility = () => setShowSusceptibility(v => !v);
-    const toggleSaturation = () => { setShowSaturation(true); setShowPrecip12hr(false); };
-    const togglePrecip12hr = () => { setShowPrecip12hr(true); setShowSaturation(false); };
-    const toggleSaturationLegend = () => setShowSaturationLegend(v => !v);
-    const toggleSusceptibilityLegend = () => setShowSusceptibilityLegend(v => !v);
-    const togglePrecipLegend = () => setShowPrecipLegend(v => !v);
-    const toggleForecast = () => setShowForecast(v => !v);
+  return (
+    <main>
+      {showDisclaimer && <Disclaimer onAgree={handleAgree} />}
+      <div className="map-label">SOIL SATURATION PERCENTAGE</div>
+      <MapContainer
+        id="map"
+        center={center}
+        zoom={9}
+        minZoom={7}
+        maxZoom={18}
+        scrollWheelZoom={false}
+        zoomControl={false}
+        style={{ height: '100vh', width: '100%' }}
+      >
+        <TileLayer
+          url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles © Esri"
+        />
 
-    return (
-        <main>
-            {showDisclaimer && <Disclaimer onAgree={handleAgree} />}
-            <div className="map-label">SOIL SATURATION PERCENTAGE</div>
+        <MapMenu
+          showStations={showStations}
+          onToggleStations={toggleStations}
 
-            <MapContainer
-                id="map"
-                center={center}
-                zoom={9}
-                minZoom={7}
-                maxZoom={18}
-                scrollWheelZoom={false}
-                zoomControl={false}
-                style={{ height: '100vh', width: '100%' }}
-            >
-                <TileLayer
-                    url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    attribution="Tiles © Esri"
-                />
+          showPrecip={showPrecip}
+          onTogglePrecip={togglePrecip}
 
-                <MapMenu
-                    showStations={showStations} onToggleStations={toggleStations}
-                    showPrecip={showPrecip} onTogglePrecip={togglePrecip}
-                    showSusceptibility={showSusceptibility} onToggleSusceptibility={toggleSusceptibility}
-                    showSaturation={showSaturation} onToggleSaturation={toggleSaturation}
-                    showPrecip12hr={showPrecip12hr} onTogglePrecip12hr={togglePrecip12hr}
-                    showSaturationLegend={showSaturationLegend} onToggleSaturationLegend={toggleSaturationLegend}
-                    showSusceptibilityLegend={showSusceptibilityLegend} onToggleSusceptibilityLegend={toggleSusceptibilityLegend}
-                    showPrecipLegend={showPrecipLegend} onTogglePrecipLegend={togglePrecipLegend}
-                    availableYears={availableYears} selectedYear={selectedYear} onYearChange={setSelectedYear}
-                    showForecast={showForecast} onToggleForecast={toggleForecast}
-                />
+          showSusceptibility={showSusceptibility}
+          onToggleSusceptibility={toggleSusceptibility}
 
-                <EsriOverlays
-                    showPrecip={showPrecip}
-                    showSusceptibility={showSusceptibility}
-                    showForecast={showForecast}
-                    currentTime={currentTime}
-                />
+          showSaturation={showSaturation}
+          onToggleSaturation={toggleSaturation}
 
-                <ZoomControl position="topright" />
+          showPrecip12hr={showPrecip12hr}
+          onTogglePrecip12hr={togglePrecip12hr}
 
-                {showStations && (
-                    <PopulateStations showSaturation={showSaturation} showPrecip12hr={showPrecip12hr} />
-                )}
+          showSaturationLegend={showSaturationLegend}
+          onToggleSaturationLegend={toggleSaturationLegend}
 
-                <PopulateLandslides selectedYear={selectedYear} setAvailableYears={setAvailableYears} />
+          showSusceptibilityLegend={showSusceptibilityLegend}
+          onToggleSusceptibilityLegend={toggleSusceptibilityLegend}
+
+          showPrecipLegend={showPrecipLegend}
+          onTogglePrecipLegend={togglePrecipLegend}
+
+          availableYears={availableYears}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+        />
+
+        <EsriOverlays
+        showPrecip={showPrecip}
+        showSusceptibility={showSusceptibility}
+        />
+
+        <ZoomControl position="topright" />
+        
+        {showStations && (
+          <PopulateStations
+            showSaturation={showSaturation}
+            showPrecip12hr={showPrecip12hr}
+          />
+        )}
+
+        <PopulateLandslides
+          selectedYear={selectedYear}
+          setAvailableYears={setAvailableYears}
+        />
 
                 {showSaturationLegend && <SoilSaturationLegend />}
                 {showSusceptibilityLegend && <SusceptibilityLegend />}
                 {showPrecipLegend && <PrecipLegend />}
 
-                {/* --- RENDER TIME CONTROL BAR IF FORECAST IS ON --- */}
-                {showForecast && (
-                    <TimeControlBar
-                        startTime={radarTimeRange.start}
-                        endTime={radarTimeRange.end}
-                        currentTime={currentTime}
-                        isPlaying={isPlaying}
-                        onTogglePlay={() => setIsPlaying(p => !p)}
-                        onSeek={handleSeek}
-                    />
-                )}
-
-                <div className="logo-container">
-                    <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
-                </div>
-            </MapContainer>
-        </main>
-    );
+        <div className="logo-container">
+          <img src={LandslideLogo} alt="Landslide Hazard Mitigation Logo" className="landslide-logo" />
+        </div>
+      </MapContainer>
+    </main>
+  );
 }
