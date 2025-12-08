@@ -7,9 +7,11 @@ import HighchartsReact from "highcharts-react-official";
 import "leaflet/dist/leaflet.css";
 import "../styles/Stations.css";
 
-// --- CONSTANTS ---
-const BASE_STATIONS_URL = "http://localhost:8080/api/stations";
-// const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations";
+// const BASE_STATIONS_URL = "http://localhost:8080/api/stations";
+const BASE_STATIONS_URL = "https://derrumbe-test.derrumbe.net/api/stations";
+
+const getHistoryUrl = (stationId) => `${BASE_STATIONS_URL}/history/${stationId}/wc`;
+
 const createSaturationIcon = (saturation) => {
     let className = "saturation-marker";
     if (saturation >= 90) className += " high";
@@ -72,17 +74,15 @@ const StationsMap = ({ selectedMetric, onStationSelect, selectedStationId }) => 
 
     const getStatusColor = (station) => {
         if (selectedStationId === station.station_id) {
-            return "#ff0000"; // Red
+            return "#ff0000";
         }
         if (station.last_updated) {
             const dateString = station.last_updated.replace(" ", "T");
             const lastUpdate = new Date(dateString);
             const now = new Date();
-            console.log("Last Updated", lastUpdate);
-            console.log("Now", now);
             const diffMs = now - lastUpdate;
             const diffHours = diffMs / (1000 * 60 * 60);
-            console.log("Difference", diffHours);
+
             if (diffHours >= 12) {
                 return "#6c757d";
             }
@@ -92,7 +92,7 @@ const StationsMap = ({ selectedMetric, onStationSelect, selectedStationId }) => 
         }
 
         if (station.soil_saturation !== null && station.soil_saturation !== undefined) {
-            return "#28a745"; // Green
+            return "#28a745";
         }
 
         return "#6c757d";
@@ -103,20 +103,12 @@ const StationsMap = ({ selectedMetric, onStationSelect, selectedStationId }) => 
             center={center}
             zoom={9}
             style={{ height: "100%", width: "100%" }}
-
-            // 1. Remove the +/- buttons
             zoomControl={false}
-
-            // 2. Disable Mouse/Touch Zoom interactions
             scrollWheelZoom={false}
             doubleClickZoom={false}
             touchZoom={false}
             boxZoom={false}
-
-            // 3. Disable Keyboard shortcuts (+/- keys)
             keyboard={false}
-
-            // Optional: If you also want to prevent moving/panning the map, set this to false:
             dragging={true}
         >
             <TileLayer
@@ -125,7 +117,7 @@ const StationsMap = ({ selectedMetric, onStationSelect, selectedStationId }) => 
             />
 
             {stations.map((station) => {
-                if (station.is_available !== 1) return null;
+                if (station.is_available !== 1 || !station.latitude || !station.longitude) return null;
 
                 let icon;
 
@@ -162,72 +154,105 @@ const StationsMap = ({ selectedMetric, onStationSelect, selectedStationId }) => 
     );
 };
 
-// --- SUB-COMPONENT: Chart Logic ---
 const StationChart = ({ station, sensorIndex }) => {
     const [chartOptions, setChartOptions] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!station) return;
 
-        // --- MOCK DATA GENERATION ---
-        // TODO fetch(`${BASE_STATIONS_URL}/${station.id}/history?sensor=${sensorIndex}`)
+        const wcKey = `wc${sensorIndex}`;
+        const apiUrl = getHistoryUrl(station.station_id);
 
-        const generateData = () => {
-            const data = [];
-            const startDate = new Date();
-            startDate.setFullYear(startDate.getFullYear() - 1); // 1 year ago
+        setLoading(true);
+        setError(null);
 
-            for (let i = 0; i < 365; i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-                // Random value between 10 and 40 (simulating VWC %)
-                // Adding a sine wave to simulate seasonality
-                const value = 20 + Math.sin(i / 30) * 10 + Math.random() * 5;
-                data.push([date.getTime(), parseFloat(value.toFixed(2))]);
-            }
-            return data;
-        };
-
-        const seriesData = generateData();
-
-        setChartOptions({
-            title: {
-                text: `Water Content - ${station.city}`
-            },
-            subtitle: {
-                text: `Sensor #${sensorIndex} (Historical Data)`
-            },
-            xAxis: {
-                type: 'datetime',
-                title: { text: 'Time (Year)' }
-            },
-            yAxis: {
-                title: { text: 'Water Content (%)' },
-                min: 0,
-                max: 60
-            },
-            series: [
-                {
-                    name: `Sensor ${sensorIndex}`,
-                    data: seriesData,
-                    color: '#007bff',
-                    tooltip: {
-                        valueSuffix: ' %'
-                    }
+        fetch(apiUrl)
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
                 }
-            ],
-            chart: {
-                type: 'spline',
-                height: null,
-            },
-            credits: { enabled: false }
-        });
+                return res.json();
+            })
+            .then((data) => {
+                const historyData = data.history || [];
+
+                const seriesData = historyData.map(item => {
+                    const date = new Date(item.timestamp);
+                    const value = item[wcKey] !== undefined ? parseFloat(item[wcKey]) : null;
+                    return [date.getTime(), value];
+                }).filter(item => item[1] !== null);
+
+                setChartOptions({
+                    title: {
+                        text: `Contenido de Agua - ${station.city}`
+                    },
+                    subtitle: {
+                        text: `Sensor #${sensorIndex} (Historical Data)`
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        title: { text: 'Tiempo (Día)' }
+                    },
+                    yAxis: {
+                        title: { text: 'Contenido de Agua (%)' },
+                        min: 0,
+                        max: 1
+                    },
+                    series: [
+                        {
+                            name: `Sensor ${sensorIndex}`,
+                            data: seriesData,
+                            color: '#007bff',
+                            tooltip: {
+                                valueSuffix: ' %'
+                            }
+                        }
+                    ],
+                    chart: {
+                        type: 'spline',
+                        height: null,
+                    },
+                    credits: { enabled: false }
+                });
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Fetch error for station history:", err);
+                setError(`Error fetching data: ${err.message}`);
+                setLoading(false);
+            });
     }, [station, sensorIndex]);
 
     if (!station) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <p className="text-muted">Select a station from the map to view data.</p>
+                <p className="text-muted">Seleccione una estación del mapa para ver datos históricos.</p>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <p>Cargando datos históricos...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'red' }}>
+                <p>{error}</p>
+            </div>
+        );
+    }
+
+    if (!chartOptions.series || chartOptions.series[0].data.length === 0) {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <p className="text-muted">No hay datos históricos disponibles para este sensor.</p>
             </div>
         );
     }
@@ -235,7 +260,6 @@ const StationChart = ({ station, sensorIndex }) => {
     return <HighchartsReact highcharts={Highcharts} options={chartOptions} containerProps={{ style: { height: "100%" } }} />;
 };
 
-// --- MAIN COMPONENT ---
 function Stations() {
     const [mapMetric, setMapMetric] = useState("status");
     const [selectedStation, setSelectedStation] = useState(null);

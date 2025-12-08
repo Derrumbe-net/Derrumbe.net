@@ -173,5 +173,26 @@ class StationInfoController {
             return $response->withStatus(500)->write('Error fetching image');
         }
     }
+    public function getStationWcHistory($request, $response, $args) {
+        $stationId = $args['id'] ?? null;
+        if (!$stationId) {
+            return $this->jsonResponse($response, ['error' => 'Station ID not provided'], 400);
+        }
+
+        try {
+            $data = $this->stationInfoModel->getStationWcHistoryData($stationId);
+
+            return $this->jsonResponse($response, [
+                'station_id' => $stationId,
+                'history'    => $data
+            ]);
+
+        } catch (Exception $e) {
+            return $this->jsonResponse($response, [
+                'error' => 'Failed to read station WC history',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }

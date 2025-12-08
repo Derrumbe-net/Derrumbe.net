@@ -12,6 +12,7 @@ $app->addBodyParsingMiddleware();
 
 // Database connection
 $db = Database::getConnection();
+ini_set('memory_limit', '512M');
 
 $basePath = rtrim(str_ireplace('index.php', '', $_SERVER['SCRIPT_NAME']), '/');
 $app->setBasePath($basePath);
