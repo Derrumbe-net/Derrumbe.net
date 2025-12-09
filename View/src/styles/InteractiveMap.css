@@ -183,7 +183,7 @@
 /* 3) Precipitation - below MapMenu icons, left side */
 .legend-top-left {
     position: absolute;
-    top: 120px;       /* right below the map menu buttons */
+    top: 120px;        /* right below the map menu buttons */
     left: 30px;
     max-height: 50vh;
     overflow-y: auto;
@@ -278,7 +278,7 @@
 .time-display {
     position: absolute;
     bottom: 30px; /* Moved to bottom */
-    left: 30px;   /* Moved to left */
+    left: 30px;    /* Moved to left */
     z-index: 1000;
     background: rgba(0, 0, 0, 0.85);
     color: white;
@@ -449,7 +449,7 @@
         bottom: 150px; /* Moved up to clear the bottom legends/logos */
         padding: 8px 12px;
     }
-
+    
     .time-display {
         bottom: 150px;
         left: 10px;
