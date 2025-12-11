@@ -31,11 +31,13 @@ class EmailService {
         try {
             $mail->isSMTP();
             $mail->Host       = $_ENV['SMTP_HOST'];
-            $mail->SMTPAuth   = true;
+            $mail->SMTPAuth   = false;
             $mail->Username   = $_ENV['SMTP_USER'];
             $mail->Password   = $_ENV['SMTP_PASS']; // App password
-            $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+            // $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
             $mail->Port       = $_ENV['SMTP_PORT'];
+            $mail->SMTPSecure = false;              // <--- Disable SSL/TLS
+            $mail->SMTPAutoTLS = false;
 
             $mail->setFrom($_ENV['SMTP_USER'], "DerrumbesNet Notifications");
             $mail->addAddress($to);
