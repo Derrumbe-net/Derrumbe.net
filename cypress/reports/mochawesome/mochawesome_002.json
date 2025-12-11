@@ -1,0 +1,111 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-12-11T04:08:30.201Z",
+    "end": "2025-12-11T04:08:35.146Z",
+    "duration": 4945,
+    "testsRegistered": 1,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "d2d57838-ae74-44d1-8942-9dffe2a8457f",
+      "title": "",
+      "fullFile": "cypress/e2e/landslide_lifecycle.cy.js",
+      "file": "cypress/e2e/landslide_lifecycle.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "8443a1ba-2c3b-4104-91e5-c6407d9c3ea5",
+          "title": "Landslide Reporting Lifecycle: Submission to Public Map",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Completes the full lifecycle: User Report -> Admin Validate -> Map View",
+              "fullTitle": "Landslide Reporting Lifecycle: Submission to Public Map Completes the full lifecycle: User Report -> Admin Validate -> Map View",
+              "timedOut": null,
+              "duration": 4915,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// ======================================================\n// PHASE 1: USER SUBMISSION\n// ======================================================\n// Capture start time before the first async command\ncy.then(() => {\n  timers.submissionStart = Date.now();\n});\ncy.intercept('POST', `${API_URL}/reports`, {\n  statusCode: 201,\n  body: {\n    message: 'Report created',\n    report_id: NEW_REPORT_ID\n  }\n}).as('submitReport');\ncy.visit('/reportar', {\n  onBeforeLoad(win) {\n    cy.stub(win.navigator.geolocation, 'getCurrentPosition').callsFake(cb => {\n      return cb({\n        coords: {\n          latitude: MOCK_COORDS.lat,\n          longitude: MOCK_COORDS.lng\n        }\n      });\n    });\n  }\n});\ncy.get('input[name=\"name\"]').type(REPORT_DATA.reporter_name);\ncy.get('input[name=\"date\"]').type(REPORT_DATA.date);\ncy.get('textarea[name=\"description\"]').type(REPORT_DATA.description);\ncy.get('select[name=\"pueblo\"]').select(REPORT_DATA.city);\ncy.get('input[name=\"allowLocation\"]').check();\n// Wait for map to render before submitting\ncy.get('.esri-view-root canvas', {\n  timeout: 20000\n}).should('have.length.greaterThan', 0);\ncy.contains('button', 'Enviar Reporte').click();\n// The submission phase ends when the API response is received and success message is displayed\ncy.wait('@submitReport').then(interception => {\n  const body = interception.request.body;\n  expect(body.city).to.equal(REPORT_DATA.city);\n  expect(body.description).to.equal(REPORT_DATA.description);\n  expect(parseFloat(body.latitude)).to.be.closeTo(MOCK_COORDS.lat, 0.001);\n});\ncy.contains('¡Reporte e imágenes enviados exitosamente!').should('be.visible').then(() => {\n  timers.submissionEnd = Date.now();\n  cy.log(`Phase 1 (Submission) Duration: ${timers.submissionEnd - timers.submissionStart} ms`);\n});\n// ======================================================\n// PHASE 2: ADMIN VALIDATION\n// ======================================================\n// Start time for Admin phase\ncy.then(() => {\n  timers.adminStart = Date.now();\n});\nconst fakeHeader = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';\nconst fakePayload = 'eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20ifQ';\nconst fakeSignature = 'signature';\nconst adminToken = `${fakeHeader}.${fakePayload}.${fakeSignature}`;\nconst adminId = 1;\ncy.intercept('POST', `${API_URL}/admins/login`, {\n  statusCode: 200,\n  body: {\n    token: adminToken\n  }\n}).as('adminLogin');\ncy.intercept('GET', `${API_URL}/admins/${adminId}`, {\n  statusCode: 200,\n  body: {\n    id: adminId,\n    email: 'admin@test.com',\n    isAuthorized: 1\n  }\n}).as('checkAuth');\ncy.intercept('GET', `${API_URL}/reports`, {\n  statusCode: 200,\n  body: [pendingReportObj]\n}).as('getReports');\ncy.intercept('POST', `${API_URL}/landslides`, {\n  statusCode: 201,\n  body: {\n    id: NEW_LANDSLIDE_ID\n  }\n}).as('createLandslide');\ncy.intercept('PUT', `${API_URL}/reports/${NEW_REPORT_ID}`, {\n  statusCode: 200,\n  body: {\n    message: 'Updated'\n  }\n}).as('updateReport');\ncy.visit('/cms/login');\ncy.get('input[placeholder=\"Correo Electrónico\"]').type('admin@test.com');\ncy.get('input[placeholder=\"Contraseña\"]').type('password123');\ncy.get('button[type=\"submit\"]').click();\ncy.wait('@adminLogin');\ncy.visit('/cms/reportes', {\n  onBeforeLoad(win) {\n    const fakePayload = 'eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20ifQ==';\n    const fakeToken = `header.${fakePayload}.signature`;\n    win.localStorage.setItem('cmsAdmin', fakeToken);\n  }\n});\ncy.wait('@getReports');\ncy.contains('Reportes Ciudadanos').should('be.visible');\ncy.contains('td', REPORT_DATA.city).parent().within(() => {\n  cy.contains('Pendiente').should('be.visible');\n  cy.get('button[title=\"Validar / Editar\"]').click();\n});\ncy.contains('Validar Reporte').should('be.visible');\ncy.get('select[name=\"is_validated\"]').select('1');\ncy.get('input[name=\"latitude\"]').should('have.value', MOCK_COORDS.lat.toString());\ncy.contains('button', 'Guardar Cambios').click();\ncy.get('.swal2-confirm').click();\ncy.wait('@createLandslide').then(i => {\n  // Assert against string for robustness, as noted in previous response\n  expect(i.request.body.latitude).to.eq(MOCK_COORDS.lat.toString());\n});\ncy.wait('@updateReport').then(i => {\n  expect(i.request.body.is_validated).to.eq(1);\n  expect(i.request.body.landslide_id).to.eq(NEW_LANDSLIDE_ID);\n});\ncy.contains('Reporte actualizado').should('be.visible').then(() => {\n  timers.adminEnd = Date.now();\n  cy.log(`Phase 2 (Admin Validation) Duration: ${timers.adminEnd - timers.adminStart} ms`);\n});\n// ======================================================\n// PHASE 3: PUBLIC MAP VISUALIZATION\n// ======================================================\n// Start time for Map phase\ncy.then(() => {\n  timers.mapStart = Date.now();\n});\ncy.intercept('GET', `${API_URL}/landslides`, {\n  statusCode: 200,\n  body: [validatedLandslideObj]\n}).as('getLandslides');\ncy.intercept('GET', `${API_URL}/stations`, []).as('getStations');\ncy.visit('/mapa-interactivo');\ncy.contains('Acepto | Agree').click();\nconst currentYear = new Date().getFullYear().toString();\ncy.get('button[title=\"History\"]').click();\ncy.get('.filters').contains('label', currentYear).find('input[type=\"checkbox\"]').check();\ncy.wait('@getLandslides');\ncy.get('.leaflet-marker-icon').should('have.attr', 'src').and('include', 'green-location-pin');\ncy.get('.leaflet-marker-icon').first().click({\n  force: true\n});\nconst date = new Date(REPORT_DATA.date);\nconst formattedDate = date.toLocaleDateString('en-US', {\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric'\n});\ncy.contains(formattedDate).should('be.visible').then(() => {\n  timers.mapEnd = Date.now();\n  cy.log(`Phase 3 (Map Visualization) Duration: ${timers.mapEnd - timers.mapStart} ms`);\n});",
+              "err": {
+                "message": "AssertionError: expected 18.2208 to equal '18.2208'",
+                "estack": "AssertionError: expected 18.2208 to equal '18.2208'\n    at Context.eval (webpack:///./cypress/e2e/landslide_lifecycle.cy.js:181:47)\n    at getRet (http://localhost:8080/__cypress/runner/cypress_runner.js:122460:20)\n    at tryCatcher (http://localhost:8080/__cypress/runner/cypress_runner.js:1777:23)\n    at Promise.attempt.Promise.try (http://localhost:8080/__cypress/runner/cypress_runner.js:4285:29)\n    at Context.thenFn (http://localhost:8080/__cypress/runner/cypress_runner.js:122471:66)\n    at Context.then (http://localhost:8080/__cypress/runner/cypress_runner.js:122722:21)",
+                "diff": "- 18.2208\n+ '18.2208'\n"
+              },
+              "uuid": "34fd4002-e1c2-4fc0-b139-f2fedcd48483",
+              "parentUUID": "8443a1ba-2c3b-4104-91e5-c6407d9c3ea5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "34fd4002-e1c2-4fc0-b139-f2fedcd48483"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 4915,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "embeddedScreenshots": true,
+        "inlineAssets": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

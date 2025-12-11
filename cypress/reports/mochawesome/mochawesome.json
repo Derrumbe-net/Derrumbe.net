@@ -1,0 +1,107 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-11T03:42:46.400Z",
+    "end": "2025-12-11T03:42:51.747Z",
+    "duration": 5347,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "25db2023-f5db-430e-af83-6f9f5675b278",
+      "title": "",
+      "fullFile": "cypress/e2e/landslide_lifecycle.cy.js",
+      "file": "cypress/e2e/landslide_lifecycle.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "84cbdb79-89b9-420c-9d44-6823d84fe2bd",
+          "title": "Landslide Reporting Lifecycle: Submission to Public Map",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Completes the full lifecycle: User Report -> Admin Validate -> Map View",
+              "fullTitle": "Landslide Reporting Lifecycle: Submission to Public Map Completes the full lifecycle: User Report -> Admin Validate -> Map View",
+              "timedOut": null,
+              "duration": 5296,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// ======================================================\n// PHASE 1: USER SUBMISSION (/reportar)\n// ======================================================\n// 1. Intercept the submission call\ncy.intercept('POST', `${API_URL}/reports`, {\n  statusCode: 201,\n  body: {\n    message: 'Report created',\n    report_id: NEW_REPORT_ID\n  }\n}).as('submitReport');\n// 2. Mock Geolocation logic before page load\ncy.visit('/reportar', {\n  onBeforeLoad(win) {\n    cy.stub(win.navigator.geolocation, 'getCurrentPosition').callsFake(cb => {\n      return cb({\n        coords: {\n          latitude: MOCK_COORDS.lat,\n          longitude: MOCK_COORDS.lng\n        }\n      });\n    });\n  }\n});\n// 3. Fill out the form\ncy.get('input[name=\"name\"]').type(REPORT_DATA.reporter_name);\ncy.get('input[name=\"date\"]').type(REPORT_DATA.date);\ncy.get('textarea[name=\"description\"]').type(REPORT_DATA.description);\n// Select dropdown (Pueblo)\ncy.get('select[name=\"pueblo\"]').select(REPORT_DATA.city);\n// 4. Handle Geolocation Permission Checkbox\ncy.get('input[name=\"allowLocation\"]').check();\n// Verify Map appears (Component logic: showMap becomes true)\ncy.get('.esri-view-root canvas', {\n  timeout: 20000\n}).should('have.length.greaterThan', 0);\n// 5. Submit Form\ncy.contains('button', 'Enviar Reporte').click();\n// 6. Verify API Request Payload\ncy.wait('@submitReport').then(interception => {\n  const body = interception.request.body;\n  expect(body.city).to.equal(REPORT_DATA.city);\n  expect(body.description).to.equal(REPORT_DATA.description);\n  // Coordinates are passed as strings in your code\n  expect(parseFloat(body.latitude)).to.be.closeTo(MOCK_COORDS.lat, 0.001);\n});\n// 7. Verify Success UI\ncy.contains('¡Reporte e imágenes enviados exitosamente!').should('be.visible');\n// ======================================================\n// PHASE 2: ADMIN VALIDATION (/cms)\n// ======================================================\n// 1. Mock Login & Auth API calls\n// Build valid fake JWT\nconst fakeHeader = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';\nconst fakePayload = 'eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20ifQ';\nconst fakeSignature = 'signature';\nconst adminToken = `${fakeHeader}.${fakePayload}.${fakeSignature}`;\nconst adminId = 1;\n// Intercepts\ncy.intercept('POST', `${API_URL}/admins/login`, {\n  statusCode: 200,\n  body: {\n    token: adminToken\n  }\n}).as('adminLogin');\ncy.intercept('GET', `${API_URL}/admins/${adminId}`, {\n  statusCode: 200,\n  body: {\n    id: adminId,\n    email: 'admin@test.com',\n    isAuthorized: 1\n  }\n}).as('checkAuth');\n// Intercept Fetching Reports (CMSReports.jsx)\ncy.intercept('GET', `${API_URL}/reports`, {\n  statusCode: 200,\n  body: [pendingReportObj] // Return our pending report\n}).as('getReports');\n// Intercept Creating Landslide (Triggered when validating)\ncy.intercept('POST', `${API_URL}/landslides`, {\n  statusCode: 201,\n  body: {\n    id: NEW_LANDSLIDE_ID\n  }\n}).as('createLandslide');\n// Intercept Updating Report (Final validation step)\ncy.intercept('PUT', `${API_URL}/reports/${NEW_REPORT_ID}`, {\n  statusCode: 200,\n  body: {\n    message: 'Updated'\n  }\n}).as('updateReport');\n// 2. Perform Login Flow\ncy.visit('/cms/login');\ncy.get('input[placeholder=\"Correo Electrónico\"]').type('admin@test.com');\ncy.get('input[placeholder=\"Contraseña\"]').type('password123');\ncy.get('button[type=\"submit\"]').click();\ncy.wait('@adminLogin');\n// Note: Your CMSLogin extracts ID from JWT. \n// Since we provided a dummy token, your `atob` logic might fail in the real app if the token isn't a valid JWT structure.\n// **Workaround for test:** Manually set localStorage and visit dashboard if login logic is strict about JWT format.\n// However, assuming `checkAuth` passes or we bypass:\n// Bypass UI login complexity by seeding storage (Mocking a valid JWT payload structure is annoying)\n// Let's assume the login worked or force the visit:\ncy.visit('/cms/reportes', {\n  onBeforeLoad(win) {\n    // Mock a token that decodes to ID 1 to satisfy `getPayloadFromToken`\n    // {\"sub\":1,\"email\":\"admin@test.com\"} base64 encoded\n    const fakePayload = 'eyJzdWIiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20ifQ==';\n    const fakeToken = `header.${fakePayload}.signature`;\n    win.localStorage.setItem('cmsAdmin', fakeToken);\n  }\n});\n// 3. Reports Dashboard Actions\ncy.wait('@getReports'); // Wait for table to load\ncy.contains('Reportes Ciudadanos').should('be.visible');\n// Verify the report is in the table as \"Pendiente\"\ncy.contains('td', REPORT_DATA.city).parent().within(() => {\n  cy.contains('Pendiente').should('be.visible');\n  cy.get('button[title=\"Validar / Editar\"]').click();\n});\n// 4. Validate the Report in the Form\ncy.contains('Validar Reporte').should('be.visible');\n// Change status to Validated\ncy.get('select[name=\"is_validated\"]').select('1'); // 1 = Validado\n// Check that lat/long are filled (required for validation)\ncy.get('input[name=\"latitude\"]').should('have.value', MOCK_COORDS.lat.toString());\n// Save\ncy.contains('button', 'Guardar Cambios').click();\n// Handle SweetAlert Confirmation\ncy.get('.swal2-confirm').click();\n// 5. Verify Requests were made\n// Expect creation of landslide record\ncy.wait('@createLandslide').then(interception => {\n  expect(interception.request.body.latitude).to.eq(MOCK_COORDS.lat);\n});\n// Expect update of report record linking it to landslide\ncy.wait('@updateReport').then(interception => {\n  expect(interception.request.body.is_validated).to.eq(1);\n  expect(interception.request.body.landslide_id).to.eq(NEW_LANDSLIDE_ID);\n});\n// Verify Success Alert\ncy.contains('Reporte actualizado').should('be.visible');\n// ======================================================\n// PHASE 3: PUBLIC VISUALIZATION (/mapa-interactivo)\n// ======================================================\n// 1. Intercept Landslides Fetch\n// We now return the landslide object that corresponds to the report we just validated\ncy.intercept('GET', `${API_URL}/landslides`, {\n  statusCode: 200,\n  body: [validatedLandslideObj]\n}).as('getLandslides');\n// Intercept Station data to prevent errors (empty array)\ncy.intercept('GET', `${API_URL}/stations`, []).as('getStations');\n// 2. Visit Map\ncy.visit('/mapa-interactivo');\n// 3. Handle Disclaimer\ncy.contains('Acepto | Agree').click();\n// 4. Filter by Year (Our report is for today's year)\nconst currentYear = new Date().getFullYear().toString();\ncy.get('button[title=\"History\"]').click();\n// 3. Find the label (or input) inside the 'history' filters div that contains the current year text\n// In MapMenu.jsx, the filters are checkboxes within labels:\ncy.get('.filters').contains('label', currentYear).find('input[type=\"checkbox\"]').check(); // Select the checkbox for the current year\n// Depending on your UI, you might need to select the year to see the point\n// Your code shows: if (selectedYear) -> disable stations, show landslides\n// We need to simulate selecting the year from the menu\n//cy.get('.map-menu-btn').click(); // Open menu\n//cy.get('select').select(currentYear); // Select year dropdown\n// 5. Verify Pin on Map\n// Leaflet markers are usually rendered as <img> with specific classes or alts\n// We wait for the API call first\ncy.wait('@getLandslides');\n// Check if the pin exists in the DOM. \n// Leaflet often puts markers in the 'leaflet-marker-pane'.\n// We can check for the specific icon image you used in InteractiveMap.jsx (green-location-pin.png)\ncy.get('.leaflet-marker-icon').should('have.attr', 'src').and('include', 'green-location-pin');\n// 6. Verify Popup Data\n// Click the marker (Cypress forces click on the first one found)\ncy.get('.leaflet-marker-icon').first().click({\n  force: true\n});\nconst date = new Date(REPORT_DATA.date);\nconst formattedDate = date.toLocaleDateString('en-US', {\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric'\n});\ncy.contains(formattedDate).should('be.visible');",
+              "err": {},
+              "uuid": "a9407f4c-e4eb-4038-9d8b-f07a59a7bda6",
+              "parentUUID": "84cbdb79-89b9-420c-9d44-6823d84fe2bd",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a9407f4c-e4eb-4038-9d8b-f07a59a7bda6"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 5296,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "embeddedScreenshots": true,
+        "inlineAssets": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}
