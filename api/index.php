@@ -28,6 +28,7 @@ $app->setBasePath($basePath);
 (require __DIR__ . '/Route/ProjectRoutes.php')($app, $db);
 (require __DIR__ . '/Route/StationInfoRoutes.php')($app, $db);
 (require __DIR__ . '/Route/ReportRoutes.php')($app, $db);
+(require __DIR__ . '/Route/TeamMemberRoutes.php')($app, $db);
 
 $app->addErrorMiddleware(false, true, true);
 
