@@ -10,6 +10,7 @@ import {
     FaUsers,
     FaSignOutAlt,
     FaIdCard,
+    FaHandshake, 
 } from "react-icons/fa";
 
 import "../styles/CMSSidebar.css";
@@ -69,9 +70,15 @@ export default function Sidebar() {
                     <span className="cms-link-icon"><FaBroadcastTower /></span>
                     <span>Estaciones</span>
                 </NavLink>
+
                 <NavLink to="/cms/equipo" className={({ isActive }) => `cms-link ${isActive ? "cms-link--active" : ""}`}>
                     <span className="cms-link-icon"><FaIdCard /></span>
                     <span>Equipo</span>
+                </NavLink>
+
+                <NavLink to="/cms/financiamiento" className={({ isActive }) => `cms-link ${isActive ? "cms-link--active" : ""}`}>
+                    <span className="cms-link-icon"><FaHandshake /></span>
+                    <span>Financiamiento</span>
                 </NavLink>
 
                 {currentUserEmail === SUPER_ADMIN_EMAIL && (

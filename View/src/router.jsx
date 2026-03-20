@@ -27,7 +27,8 @@ import CMSPublications from './cms/pages/CMSPublications';
 import CMSReports from './cms/pages/CMSReports';
 import CMSStations from './cms/pages/CMSStations';
 import CMSManageUsers from './cms/pages/CMSManageUsers';
-import CMSTeamMembers from './cms/pages/CMSTeamMembers'; // NEW
+import CMSTeamMembers from './cms/pages/CMSTeamMembers';
+import CMSFundingSources from './cms/pages/CMSFundingSources';
 
 // Auth protection
 import ProtectedRoute from './cms/layout/ProtectedRoute';
@@ -78,7 +79,8 @@ const router = createBrowserRouter([
       { path: 'reportes',        element: <CMSReports /> },
       { path: 'estaciones',      element: <CMSStations /> },
       { path: 'usuarios',        element: <CMSManageUsers /> },
-      { path: 'equipo',          element: <CMSTeamMembers /> }, // NEW
+      { path: 'equipo',          element: <CMSTeamMembers /> }, 
+      { path: 'financiamiento',  element: <CMSFundingSources /> },
     ],
   },
 ]);

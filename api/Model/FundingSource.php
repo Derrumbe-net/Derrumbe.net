@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 use Exception;
 
-class TeamMember
+class FundingSource
 {
     private $conn;
     public function __construct($conn)
@@ -15,33 +15,21 @@ class TeamMember
     }
 
     // CREATE
-    public function createMember($data)
+    public function createFundingSource($data)
     {
         try {
             $stmt = $this->conn->prepare(
-                "INSERT INTO team_member
-                    (name, role, email, phone, phone_ext, linkedin_url, image_url, member_type, display_order)
-                 VALUES
-                    (:name, :role, :email, :phone, :phone_ext, :linkedin_url, :image_url, :member_type, :display_order)"
+                "INSERT INTO funding_source (name, website_url, image_url, display_order)
+                 VALUES (:name, :website_url, :image_url, :display_order)"
             );
             $name          = $data['name'];
-            $role          = $data['role'];
-            $email         = $data['email']         ?? null;
-            $phone         = $data['phone']         ?? null;
-            $phone_ext     = $data['phone_ext']     ?? null;
-            $linkedin_url  = $data['linkedin_url']  ?? null;
+            $website_url   = $data['website_url']   ?? null;
             $image_url     = $data['image_url']     ?? null;
-            $member_type   = $data['member_type'];
             $display_order = (int) ($data['display_order'] ?? 0);
 
             $stmt->bindParam(':name',          $name,          PDO::PARAM_STR);
-            $stmt->bindParam(':role',          $role,          PDO::PARAM_STR);
-            $stmt->bindParam(':email',         $email,         PDO::PARAM_STR);
-            $stmt->bindParam(':phone',         $phone,         PDO::PARAM_STR);
-            $stmt->bindParam(':phone_ext',     $phone_ext,     PDO::PARAM_STR);
-            $stmt->bindParam(':linkedin_url',  $linkedin_url,  PDO::PARAM_STR);
+            $stmt->bindParam(':website_url',   $website_url,   PDO::PARAM_STR);
             $stmt->bindParam(':image_url',     $image_url,     PDO::PARAM_STR);
-            $stmt->bindParam(':member_type',   $member_type,   PDO::PARAM_STR);
             $stmt->bindParam(':display_order', $display_order, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
@@ -54,31 +42,29 @@ class TeamMember
         }
     }
 
-    // GET ALL (ordered by type then display_order)
-    public function getAllMembers()
+    // GET ALL
+    public function getAllFundingSources()
     {
         $stmt = $this->conn->query(
-            "SELECT * FROM team_member ORDER BY
-             FIELD(member_type,'faculty','graduate','undergraduate'),
-             display_order ASC, member_id ASC"
+            "SELECT * FROM funding_source ORDER BY display_order ASC, funding_id ASC"
         );
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // GET BY ID
-    public function getMemberById($id)
+    public function getFundingSourceById($id)
     {
-        $stmt = $this->conn->prepare("SELECT * FROM team_member WHERE member_id=:id");
+        $stmt = $this->conn->prepare("SELECT * FROM funding_source WHERE funding_id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // UPDATE
-    public function updateMember($id, $data)
+    public function updateFundingSource($id, $data)
     {
         try {
-            $allowed = ['name', 'role', 'email', 'phone', 'phone_ext', 'linkedin_url', 'image_url', 'member_type', 'display_order'];
+            $allowed = ['name', 'website_url', 'image_url', 'display_order'];
             $setClauses = [];
             $params = [':id' => $id];
 
@@ -90,7 +76,7 @@ class TeamMember
             }
             if (empty($setClauses)) return true;
 
-            $sql = "UPDATE team_member SET " . implode(', ', $setClauses) . " WHERE member_id = :id";
+            $sql = "UPDATE funding_source SET " . implode(', ', $setClauses) . " WHERE funding_id = :id";
             $stmt = $this->conn->prepare($sql);
             return $stmt->execute($params);
         } catch (PDOException $e) {
@@ -100,11 +86,11 @@ class TeamMember
     }
 
     // UPDATE image_url only
-    public function updateMemberImageColumn($id, $filename)
+    public function updateFundingSourceImageColumn($id, $filename)
     {
         try {
             $stmt = $this->conn->prepare(
-                "UPDATE team_member SET image_url=:image_url WHERE member_id=:id"
+                "UPDATE funding_source SET image_url = :image_url WHERE funding_id = :id"
             );
             $stmt->bindParam(':image_url', $filename, PDO::PARAM_STR);
             $stmt->bindParam(':id',        $id,       PDO::PARAM_INT);
@@ -116,14 +102,14 @@ class TeamMember
     }
 
     // DELETE
-    public function deleteMember($id)
+    public function deleteFundingSource($id)
     {
-        $stmt = $this->conn->prepare("DELETE FROM team_member WHERE member_id=:id");
+        $stmt = $this->conn->prepare("DELETE FROM funding_source WHERE funding_id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    // ---- FTP helpers (mirrors Publication pattern) ----
+    // ---- FTP helpers ----
 
     public function uploadImageToFtp($localFilePath, $remoteFileName)
     {
@@ -133,7 +119,7 @@ class TeamMember
         $ftp_port   = $_ENV['FTPS_PORT'];
 
         $base   = rtrim($_ENV['FTPS_BASE_PATH'] ?? 'files/', '/');
-        $target = $base . '/team/';
+        $target = $base . '/funding/';
         $remote = $target . $remoteFileName;
 
         $conn = ftp_ssl_connect($ftp_server, $ftp_port, 10);
@@ -151,7 +137,7 @@ class TeamMember
         return $remoteFileName;
     }
 
-    public function getMemberImageContent($fileName)
+    public function getFundingSourceImageContent($fileName)
     {
         $ftp_server = $_ENV['FTPS_SERVER'];
         $ftp_user   = $_ENV['FTPS_USER'];
@@ -159,7 +145,7 @@ class TeamMember
         $ftp_port   = $_ENV['FTPS_PORT'];
 
         $base   = rtrim($_ENV['FTPS_BASE_PATH'] ?? 'files/', '/');
-        $remote = $base . '/team/' . ltrim($fileName, '/');
+        $remote = $base . '/funding/' . ltrim($fileName, '/');
 
         $conn = ftp_ssl_connect($ftp_server, $ftp_port, 10);
         if (!$conn) throw new Exception("Failed to connect to FTPS server");

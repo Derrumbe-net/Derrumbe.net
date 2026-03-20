@@ -14,17 +14,21 @@ export default function About() {
   const [faculty, setFaculty]             = useState([]);
   const [graduate, setGraduate]           = useState([]);
   const [undergraduate, setUndergraduate] = useState([]);
+  const [fundingSources, setFundingSources] = useState([]);
   const [loading, setLoading]             = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/team-members`)
-      .then((r) => r.json())
-      .then((members) => {
+    Promise.all([
+      fetch(`${API_URL}/team-members`).then((r) => r.json()),
+      fetch(`${API_URL}/funding-sources`).then((r) => r.json()),
+    ])
+      .then(([members, funding]) => {
         setFaculty(members.filter((m) => m.member_type === "faculty"));
         setGraduate(members.filter((m) => m.member_type === "graduate"));
         setUndergraduate(members.filter((m) => m.member_type === "undergraduate"));
+        setFundingSources(funding);
       })
-      .catch((err) => console.error("Error fetching team members:", err))
+      .catch((err) => console.error("Error fetching about data:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -89,6 +93,17 @@ export default function About() {
               <MemberCard key={m.member_id} member={m} />
             ))}
           </div>
+
+          {fundingSources.length > 0 && (
+            <div className="funding__section">
+              <div className="directory__title funding__banner">Fuentes de Financiamiento</div>
+              <div className="funding__grid">
+                {fundingSources.map((f) => (
+                  <FundingCard key={f.funding_id} source={f} />
+                ))}
+              </div>
+            </div>
+          )}
         </>
       )}
     </section>
@@ -133,5 +148,30 @@ function MemberCard({ member, showContact = false }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function FundingCard({ source }) {
+  const imgSrc = source.image_url
+    ? `${API_URL}/funding-sources/${source.funding_id}/image`
+    : null;
+
+  const inner = (
+    <div className="funding__card">
+      {imgSrc ? (
+        <img src={imgSrc} alt={source.name} className="funding__logo" />
+      ) : (
+        <span className="funding__name-fallback">{source.name}</span>
+      )}
+      <p className="funding__label">{source.name}</p>
+    </div>
+  );
+
+  return source.website_url ? (
+    <a href={source.website_url} target="_blank" rel="noreferrer" className="funding__link">
+      {inner}
+    </a>
+  ) : (
+    inner
   );
 }
