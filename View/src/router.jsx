@@ -29,6 +29,7 @@ import CMSStations from './cms/pages/CMSStations';
 import CMSManageUsers from './cms/pages/CMSManageUsers';
 import CMSTeamMembers from './cms/pages/CMSTeamMembers';
 import CMSFundingSources from './cms/pages/CMSFundingSources';
+import CMSOfficeInfo from './cms/pages/CMSOfficeInfo';
 
 // Auth protection
 import ProtectedRoute from './cms/layout/ProtectedRoute';
@@ -81,6 +82,7 @@ const router = createBrowserRouter([
       { path: 'usuarios',        element: <CMSManageUsers /> },
       { path: 'equipo',          element: <CMSTeamMembers /> }, 
       { path: 'financiamiento',  element: <CMSFundingSources /> },
+      { path: 'contacto',        element: <CMSOfficeInfo /> },
     ],
   },
 ]);
