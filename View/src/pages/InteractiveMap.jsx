@@ -521,7 +521,7 @@ const getStationStatus = (lastUpdated) => {
 };
 
 const SoilSaturationLegend = () => (
-    <div className="legend-container legend-bottom-right">
+    <div className="legend-container legend-soil-saturation">
         <div className="legend-title">Soil Saturation</div>
         <div className="legend-item">
             <span className="legend-color-box" style={{background:"#e0c853"}}></span>
@@ -539,7 +539,7 @@ const SoilSaturationLegend = () => (
 );
 
 const SusceptibilityLegend = () => (
-    <div className="legend-container legend-bottom-right-top">
+    <div className="legend-container legend-landslide-susceptibility">
         <div className="legend-title">Landslide Susceptibility</div>
         <div className="legend-item">
             <span className="legend-color-box" style={{background:"#C0C0C0"}}></span>
@@ -565,7 +565,7 @@ const SusceptibilityLegend = () => (
 );
 
 const PrecipLegend = () => (
-    <div className="legend-container legend-top-left legend-scrollable" >
+    <div className="legend-container legend-precipitation legend-scrollable" >
         <div className="legend-title">Precipitation (inches)</div>
         {[
             ["#9FEAFF", "0.01 - 0.05"], ["#7FD6FF", "0.05 - 0.10"], ["#5FC2FF", "0.10 - 0.15"], ["#0099FF", "0.15 - 0.20"],
@@ -867,7 +867,7 @@ export default function InteractiveMap() {
             <MapContainer
                 id="map"
                 center={center}
-                zoom={isMobile ? 9 : 10}
+                zoom={isMobile ? 8 : 10}
                 minZoom={7}
                 maxZoom={18}
                 scrollWheelZoom={false}

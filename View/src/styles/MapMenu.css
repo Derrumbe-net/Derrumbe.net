@@ -6,12 +6,12 @@
   border-radius: 6px;
   color: white;
   font-family: "Inter", sans-serif;
-  z-index: 999;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   padding: 6px 8px;
   transition: all 0.3s ease;
-  max-width: 200px;
+  max-width: 300px;
 }
 
 .menu-row {
@@ -70,6 +70,8 @@
 
 .filters input[type="radio"] {
   accent-color: #2e7d32;
+  width: 15px;
+  height: 15px;
 }
 
 .filter-subtitle {
@@ -88,10 +90,10 @@
 }
 
 .filters input[type="checkbox"] {
-    width: 10px;
-    height: 10px;
-    min-width: 10px;
-    min-height: 10px;
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    min-height: 15px;
     margin-right: 10px;
     accent-color: #2e7d32; /* optional: your green theme */
 }
@@ -109,11 +111,13 @@
   .map-menu {
     top: 10px !important;
     left: 10px !important;
+    transform: scale(0.8);
+    transform-origin: top left;
   }
 
   .filters input[type="checkbox"] {
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
   }
 
   .filters label {

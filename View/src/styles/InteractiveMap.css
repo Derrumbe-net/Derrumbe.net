@@ -6,27 +6,9 @@
 }
 
 /* --- title pill centered at top --- */
-/* .map-label {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,.85);
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 6px;
-  z-index: 999 !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-} */
-
 .map-label {
   position: absolute;
-  top: 80px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0,0,0,.85);
@@ -139,53 +121,42 @@
   position: absolute;
   bottom: 60px;
   right: 30px;
-  z-index: 1000;
-
+  z-index: 999;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
-
-  padding: 15px 18px;
-  border-radius: 10px;
-
+  padding: 8px 10px;
+  border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: white;
-  min-width: 190px;
-  max-width: 220px;
+  min-width: 130px;
+  max-width: 180px;
 }
 
 /* Title */
 .legend-title {
-  font-size: 1rem;
+  font-size: 0.8rem;              /* 👈 smaller */
   font-weight: 700;
-  margin-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-  padding-bottom: 6px;
+  margin-bottom: 6px;             /* 👈 was 12px */
+  padding-bottom: 3px;
 }
 
-/* Each row */
 .legend-item {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
 }
 
-.legend-item:last-child {
-  margin-bottom: 0;
-}
-
-/* Label text */
 .legend-item p {
-  padding-left: 10px;
-  font-weight: 600;
-  margin: 0;
+  padding-left: 5px;   /* 👈 tighter horizontal spacing */
+  font-weight: 500;
+  font-size: 0.65rem;  /* 👈 slightly smaller text */
+  line-height: 0;    /* 👈 reduces vertical height */
 }
 
 /* Color squares */
 .legend-color-box {
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border: 1px solid rgba(255,255,255,0.4);
   border-radius: 4px;
   flex-shrink: 0;
@@ -215,30 +186,28 @@
 
 /* --- Positioning --- */
 
-/* 1) Soil Saturation - bottom right */
-.legend-bottom-right {
+.legend-soil-saturation {
   position: absolute;
   bottom: 60px;
   right: 30px;
+  width: 150px;
 }
 
-/* 2) Susceptibility - stacked ABOVE soil saturation */
-.legend-bottom-right-top {
+.legend-landslide-susceptibility {
   position: absolute;
-  bottom: 220px; /* Adjust stack height */
+  bottom: 170px; /* Adjust stack height */
   right: 30px;
+  width: 150px;
 }
 
-/* 3) Precipitation - below MapMenu icons, left side */
-.legend-top-left {
+.legend-precipitation {
   position: absolute;
-  top: 120px;       /* right below the map menu buttons */
-  left: 30px;
-  max-height: 50vh;
+  top: 162px;       /* right below the map menu buttons */
+  right: 30px;
+  max-height: 25vh;
   overflow-y: auto;
+  width: 155px;
 }
-
-
 
 /* --- Disclaimer --- */
 .disclaimer-overlay {
@@ -313,7 +282,7 @@
 }
 
 .landslide-logo {
-  width: 100px;
+  width: 80px;
   height: auto;
   display: block;
 }
@@ -438,7 +407,7 @@
   /* ---------- MAP MENU + LABEL ---------- */
   .map-label {
     top: 55px;
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     padding: 6px 10px;
   }
 
@@ -454,8 +423,8 @@
 
   /* Play button smaller */
   .play-pause-btn {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     font-size: 9px;
     border-width: 1px;
   }
@@ -482,47 +451,45 @@
     border-width: 1px;
   }
 
-  /* ---------- LEGENDS ---------- */
-  .legend-container,
-  .legend-top-left,
-  .legend-bottom-right,
-  .legend-bottom-right-top {
-    transform: scale(0.6);
-    transform-origin: center;
-  }
-
-  .legend-bottom-right {
-    bottom: 65px !important;
-    right: -20px !important;
-  }
-
-  .legend-bottom-right-top {
-    bottom: 145px !important;
-    right: -20px !important;
-  }
-
-  .legend-top-left {
-    top: 350px !important;
-    left: -20px !important;
-    max-height: 45vh !important;
+  /* ---------- LEGENDS (MOBILE FIX) ---------- */
+  .legend-container {
+    transform: scale(0.65); /* 👈 shrink EVERYTHING */
   }
 
   .legend-title {
-    font-size: 0.8rem !important;
+    font-size: 0.6rem; 
   }
 
-  .legend-item p {
-    font-size: 0.7rem !important;
+  /* Stack them vertically on the right */
+  .legend-landslide-susceptibility,
+  .legend-soil-saturation {
+    right: 15px !important;
+    width: 130px;
+    transform-origin: bottom right;
+  } 
+
+  /* Top legend */
+  .legend-landslide-susceptibility {
+    bottom: 140px !important; /* 👈 sits above */
   }
 
-  .legend-color-box {
-    width: 12px;
-    height: 12px;
+  /* Bottom legend */
+  .legend-soil-saturation {
+    bottom: 70px !important;
+  }
+
+  /* Precipitation legend (left side → make smaller + move up) */
+  .legend-precipitation {
+    top: 250px !important;
+    left: 15px !important;
+    width: 130px;
+    max-height: 41.8vh !important;
+    transform-origin: bottom left;
   }
 
   /* ---------- LOGO ---------- */
   .logo-container {
-    bottom: 25px;
+    bottom: 5px;
     left: 5px;
   }
 
