@@ -28,6 +28,8 @@ const BASE_LANDSLIDES_URL = `${BASE_DOMAIN}/landslides`;
 
 const BASE_BATCH_UPDATE_URL = `${BASE_DOMAIN}/stations/batch-update`;
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 
 // --- CONSTANTS FOR RADAR ---
 const STEP_SIZE = 5 * 60 * 1000; // 5 minutes
@@ -59,8 +61,7 @@ const CtrlZoomHandler = ({ setShowZoomHint }) => {
     const lastShownRef = useRef(0);
 
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) return;
+        // ← REMOVE the isMobile check entirely
 
         const container = map.getContainer();
 
@@ -77,9 +78,7 @@ const CtrlZoomHandler = ({ setShowZoomHint }) => {
             if (now - lastShownRef.current > 30000) {
                 lastShownRef.current = now;
                 setShowZoomHint(true);
-
                 if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
                 timeoutRef.current = setTimeout(() => {
                     setShowZoomHint(false);
                 }, 2500);
@@ -453,6 +452,10 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
     const createSaturationIcon = (saturation, lastUpdated) => {
         const { isOffline, isStale, diffHours } = getStationStatus(lastUpdated);
 
+        const size = isMobile ? [27.5, 15] : [55, 30];
+        const anchor = isMobile ? [13.5, 7.5] : [27, 15];
+
+
         // OFF STATE
         if (isOffline) {
             return L.divIcon({
@@ -463,8 +466,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
                     </div>
                 `,
                 className: "",
-                iconSize: [55, 30],
-                iconAnchor: [27, 15],
+                iconSize: size,
+                iconAnchor: anchor,
             });
         }
 
@@ -492,8 +495,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
                 </div>
             `,
             className: "",
-            iconSize: [55, 30],
-            iconAnchor: [27, 15],
+            iconSize: size,
+            iconAnchor: anchor,
         });
     };
 
@@ -530,11 +533,14 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
     const createPrecipIcon = (precip) => {
         const color = getPrecipColor(precip);
         const rounded = Number(precip).toFixed(2);
+        const size = isMobile ? [27.5, 15] : [55, 30];
+        const anchor = isMobile ? [13.5, 7.5] : [27, 15];
+
         return L.divIcon({
             html: `<div class="precip-marker" style="background-color:${color}">${rounded}"</div>`,
             className: "",
-            iconSize: [55, 30],
-            iconAnchor: [27, 15],
+            iconSize: size,
+            iconAnchor: anchor,
         });
     };
 
@@ -580,8 +586,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
 const createLandslideIcon = () => {
     return L.icon({
         iconUrl: GreenPinIcon,
-        iconSize: [30, 40],        // Adjust size as needed
-        iconAnchor: [15, 30],      // Bottom center of the icon
+        iconSize: isMobile ? [15, 20] : [30, 40],
+        iconAnchor: isMobile ? [7.5, 15] : [15, 30],
         popupAnchor: [0, -10]      // Popup appears above the pin
     });
 };
@@ -705,25 +711,45 @@ const SusceptibilityLegend = () => (
     </div>
 );
 
-const PrecipLegend = () => (
-    <div className="legend-container legend-precipitation legend-scrollable" >
-        <div className="legend-title">Precipitation (inches)</div>
-        {[
-            ["#9FEAFF", "0.01 - 0.05"], ["#7FD6FF", "0.05 - 0.10"], ["#5FC2FF", "0.10 - 0.15"], ["#0099FF", "0.15 - 0.20"],
-            ["#00CC00", "0.20 - 0.40"], ["#00B200", "0.40 - 0.60"], ["#009900", "0.60 - 0.80"], ["#007F00", "0.80 - 1.00"],
-            ["#FFFF66", "1.00 - 1.25"], ["#FFD24D", "1.25 - 1.50"], ["#FFB733", "1.50 - 1.75"], ["#FF9900", "1.75 - 2.00"],
-            ["#FF6600", "2.00 - 2.50"], ["#FF3300", "2.50 - 3.00"], ["#CC0000", "3.00 - 3.50"], ["#FF3399", "3.50 - 4.00"],
-            ["#FF00FF", "4.00 - 4.50"], ["#CC00CC", "4.50 - 5.00"], ["#990099", "5.00 - 5.50"], ["#660066", "5.50 - 6.00"],
-            ["#330033", "6.00 - 6.50"], ["#3333FF", "6.50 - 7.00"], ["#0000CC", "7.00 - 8.00"], ["#000066", "Above 8.00"],
-        ].map(([color, label]) => (
-            <div className="legend-item" key={label}>
-                <span className="legend-color-box" style={{background: color}}></span>
-                <p>{label}</p>
-            </div>
-        ))}
-    </div>
-);
+const PrecipLegend = () => {
+    const ref = useRef(null);
 
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const stopProp = (e) => e.stopPropagation();
+
+        el.addEventListener("touchstart", stopProp, { passive: false });
+        el.addEventListener("touchmove", stopProp, { passive: false });
+        el.addEventListener("wheel", stopProp, { passive: false });
+
+        return () => {
+            el.removeEventListener("touchstart", stopProp);
+            el.removeEventListener("touchmove", stopProp);
+            el.removeEventListener("wheel", stopProp);
+        };
+    }, []);
+
+    return (
+        <div ref={ref} className="legend-container legend-precipitation legend-scrollable">
+            <div className="legend-title">Precipitation (inches)</div>
+            {[
+                ["#9FEAFF", "0.01 - 0.05"], ["#7FD6FF", "0.05 - 0.10"], ["#5FC2FF", "0.10 - 0.15"], ["#0099FF", "0.15 - 0.20"],
+                ["#00CC00", "0.20 - 0.40"], ["#00B200", "0.40 - 0.60"], ["#009900", "0.60 - 0.80"], ["#007F00", "0.80 - 1.00"],
+                ["#FFFF66", "1.00 - 1.25"], ["#FFD24D", "1.25 - 1.50"], ["#FFB733", "1.50 - 1.75"], ["#FF9900", "1.75 - 2.00"],
+                ["#FF6600", "2.00 - 2.50"], ["#FF3300", "2.50 - 3.00"], ["#CC0000", "3.00 - 3.50"], ["#FF3399", "3.50 - 4.00"],
+                ["#FF00FF", "4.00 - 4.50"], ["#CC00CC", "4.50 - 5.00"], ["#990099", "5.00 - 5.50"], ["#660066", "5.50 - 6.00"],
+                ["#330033", "6.00 - 6.50"], ["#3333FF", "6.50 - 7.00"], ["#0000CC", "7.00 - 8.00"], ["#000066", "Above 8.00"],
+            ].map(([color, label]) => (
+                <div className="legend-item" key={label}>
+                    <span className="legend-color-box" style={{background: color}}></span>
+                    <p>{label}</p>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 export default function InteractiveMap() {
     const center = [18.220833, -66.420149];
@@ -886,8 +912,8 @@ export default function InteractiveMap() {
         setShowStations(newValue);
 
         if (newValue) {
-            // Stations turned ON → Landslides OFF
-            setSelectedYear(null);
+            // Stations turned ON → clear any selected year
+            setSelectedYear("");
 
             // Default station display
             setShowSaturation(true);
@@ -897,33 +923,24 @@ export default function InteractiveMap() {
             setShowSaturationLegend(true);
             setShowPrecipLegend(false);
             setShowSusceptibilityLegend(false);
-
-            // Disable other overlays
-            setShowPrecip(false);
-            setShowSusceptibility(false);
         }
     };
-
 
     const togglePrecip = () => setShowPrecip(v => !v);
     const toggleSusceptibility = () => setShowSusceptibility(v => !v);
 
-    // Mutually Exclusive Toggles for Station Data
+    // Mutually Exclusive Toggles for Station Data (radio behavior)
     const toggleSaturation = () => {
-        if (showSaturation) {
-            setShowSaturation(false);
-        } else {
-            setShowSaturation(true);
-            setShowPrecip12hr(false);
-        }
+        setSelectedYear("");
+        setShowStations(true);
+        setShowSaturation(true);
+        setShowPrecip12hr(false);
     };
     const togglePrecip12hr = () => {
-        if (showPrecip12hr) {
-            setShowPrecip12hr(false);
-        } else {
-            setShowPrecip12hr(true);
-            setShowSaturation(false);
-        }
+        setSelectedYear("");
+        setShowStations(true);
+        setShowPrecip12hr(true);
+        setShowSaturation(false);
     };
 
     const toggleSaturationLegend = () => setShowSaturationLegend(v => !v);
@@ -931,36 +948,25 @@ export default function InteractiveMap() {
     const togglePrecipLegend = () => setShowPrecipLegend(v => !v);
     const toggleForecast = () => setShowForecast(v => !v);
 
-   const handleYearChange = (year) => {
+    const handleYearChange = (year) => {
         setSelectedYear(year);
 
         if (year) {
-            // Disable station layers
             setShowStations(false);
             setShowSaturation(false);
             setShowPrecip12hr(false);
-
-            // Disable station legends
             setShowSaturationLegend(false);
             setShowPrecipLegend(false);
-
-            // Disable overlays irrelevant to Landslide mode
-            setShowPrecip(false);
-            setShowSusceptibility(false);
-            setShowSusceptibilityLegend(false);
-
         } else {
-            // Return to default station mode
             setShowStations(true);
             setShowSaturation(true);
-            setShowPrecip12hr(true);
+            setShowPrecip12hr(false);
 
             setShowSaturationLegend(true);
             setShowSusceptibilityLegend(false);
             setShowPrecipLegend(false);
         }
     };
-
 
     const resetLayers = () => {
         setShowStations(false);
@@ -970,19 +976,18 @@ export default function InteractiveMap() {
         setShowSaturation(false);
         setShowPrecip12hr(false);
 
-        // Reset legends
         setShowSaturationLegend(false);
         setShowSusceptibilityLegend(false);
         setShowPrecipLegend(false);
     };
 
     const resetToDefault = () => {
+        setShowStations(true);
         setShowSaturation(true);
-        setShowStations(true); 
+        setShowPrecip12hr(false);
         setShowPrecip(false);
         setShowSusceptibility(false);
-        setShowForecast(true);
-        setShowPrecip12hr(true);
+        setShowForecast(false);
 
         setShowSaturationLegend(true);
         setShowSusceptibilityLegend(false);
@@ -990,7 +995,7 @@ export default function InteractiveMap() {
     };
 
     // --- MOBILE & LABEL LOGIC (From 'demo2' branch) ---
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     let mapLabelText = "";
 
@@ -1014,9 +1019,12 @@ export default function InteractiveMap() {
                 zoom={isMobile ? 8 : 10}
                 minZoom={7}
                 maxZoom={18}
-                scrollWheelZoom={true}
+                scrollWheelZoom={false}
                 zoomControl={false}
-                style={{ height: '100vh', width: '100%' }}
+                style={{ 
+                    height: isMobile ? 'calc(100svh - 51px - 179px)' : '100vh', 
+                    width: '100%' 
+                }}
             >
                 {mapLabelText && <div className="map-label">{mapLabelText}</div>}
 

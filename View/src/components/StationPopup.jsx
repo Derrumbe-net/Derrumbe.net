@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Popup } from 'react-leaflet';
 import '../styles/StationPopup.css';
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 // Simple SVG Icons for arrows
 const ChevronLeft = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -81,7 +83,7 @@ const StationPopup = ({ station }) => {
             : '0.00';
 
     return (
-        <Popup maxWidth={350}>
+        <Popup maxWidth={isMobile ? 200 : 350}>
             <div className="custom-popup-content">
                 <div className="info roboto-condensed">
                     <h2 className="bebas-neue">

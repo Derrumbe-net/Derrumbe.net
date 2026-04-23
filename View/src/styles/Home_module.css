@@ -97,30 +97,6 @@
   transform: scale(1.05);
 }
 
-@media (max-width: 900px) {
-  .hero {
-    min-height: 25vh;
-  }
-
-  .hero__logo {
-    height: clamp(40px, 14vw, 65px);
-  }
-
-  .hero__title {
-    font-size: clamp(0.75rem, 3vw, 1rem);
-  }
-
-  .btn.btn--report,
-  .btn.btn--outline {
-    font-size: 0.5rem;
-    padding: 0.2rem 0.5rem;
-  }
-
-  .hero__buttons {
-    gap: 0.5rem;
-  }
-}
-
 /* ===== MAPA INTERACTIVO ===== */
 .landing__map {
   background-color: #DFE8DA;
@@ -333,9 +309,54 @@
 }
 
 /* ============================================
-   MOBILE RESPONSIVE FIXES (EXCLUDING HERO)
+   MOBILE RESPONSIVE FIXES
    ============================================ */
 @media (max-width: 768px) {
+
+  .hero {
+    min-height: 35vh; /* ← was 25vh, make it taller */
+  }
+
+  .hero__title {
+    font-size: clamp(1.5rem, 4vw, 1.4rem); /* ← was 0.75rem, make it bigger */
+  }
+
+  .btn.btn--report,
+  .btn.btn--outline {
+    font-size: 0.75rem !important;  /* ← was 0.5rem */
+    padding: 0.5rem 1rem !important; /* ← was 0.2rem 0.5rem */
+  }
+
+  .hero__buttons {
+    gap: 0.5rem;
+  }
+
+  /* Move logos below title */
+  .hero__overlay {
+    flex-direction: column;
+  }
+
+  .hero__logos {
+      flex-direction: row !important; /* ← side by side */
+      gap: 1rem !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+  }
+
+  .hero__logo {
+      height: clamp(60px, 10vw, 45px) !important;
+      order: 2; /* logos go below title */
+  }
+
+  .hero__title {
+      order: 1; /* title goes first */
+      width: 100% !important; /* full width so logos sit below */
+      font-size: clamp(1.5rem, 4vw, 1.4rem) !important;
+  }
+
+  .hero__buttons {
+    order: 3; /* ← buttons stay last */
+  }
 
   /* ---------------------------
      MAP SECTION
@@ -384,7 +405,8 @@
     max-width: 100% !important;
     height: auto !important;
     object-fit: cover !important;
-    padding-right: 2.5rem !important;
+    padding-right: 2rem !important;
+    padding-left: 0.75rem !important;
     box-sizing: border-box !important;
   }
 
