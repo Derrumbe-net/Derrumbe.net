@@ -28,6 +28,8 @@ const BASE_LANDSLIDES_URL = `${BASE_DOMAIN}/landslides`;
 
 const BASE_BATCH_UPDATE_URL = `${BASE_DOMAIN}/stations/batch-update`;
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 
 // --- CONSTANTS FOR RADAR ---
 const STEP_SIZE = 5 * 60 * 1000; // 5 minutes
@@ -59,8 +61,7 @@ const CtrlZoomHandler = ({ setShowZoomHint }) => {
     const lastShownRef = useRef(0);
 
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) return;
+        // ← REMOVE the isMobile check entirely
 
         const container = map.getContainer();
 
@@ -77,9 +78,7 @@ const CtrlZoomHandler = ({ setShowZoomHint }) => {
             if (now - lastShownRef.current > 30000) {
                 lastShownRef.current = now;
                 setShowZoomHint(true);
-
                 if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
                 timeoutRef.current = setTimeout(() => {
                     setShowZoomHint(false);
                 }, 2500);
@@ -93,41 +92,6 @@ const CtrlZoomHandler = ({ setShowZoomHint }) => {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
     }, [map, setShowZoomHint]);
-
-    return null;
-};
-
-const MobileTouchHandler = () => {
-    const map = useMap();
-
-    useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        if (!isMobile) return;
-
-        const container = map.getContainer();
-
-        const handleTouchStart = (e) => {
-            if (e.touches.length === 2) {
-                // Two fingers → disable map drag so page can scroll
-                map.dragging.disable();
-            } else {
-                // One finger → map pans normally
-                map.dragging.enable();
-            }
-        };
-
-        const handleTouchEnd = () => {
-            map.dragging.enable();
-        };
-
-        container.addEventListener("touchstart", handleTouchStart, { passive: true });
-        container.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-        return () => {
-            container.removeEventListener("touchstart", handleTouchStart);
-            container.removeEventListener("touchend", handleTouchEnd);
-        };
-    }, [map]);
 
     return null;
 };
@@ -488,6 +452,10 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
     const createSaturationIcon = (saturation, lastUpdated) => {
         const { isOffline, isStale, diffHours } = getStationStatus(lastUpdated);
 
+        const size = isMobile ? [27.5, 15] : [55, 30];
+        const anchor = isMobile ? [13.5, 7.5] : [27, 15];
+
+
         // OFF STATE
         if (isOffline) {
             return L.divIcon({
@@ -498,8 +466,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
                     </div>
                 `,
                 className: "",
-                iconSize: [55, 30],
-                iconAnchor: [27, 15],
+                iconSize: size,
+                iconAnchor: anchor,
             });
         }
 
@@ -527,8 +495,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
                 </div>
             `,
             className: "",
-            iconSize: [55, 30],
-            iconAnchor: [27, 15],
+            iconSize: size,
+            iconAnchor: anchor,
         });
     };
 
@@ -565,11 +533,14 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
     const createPrecipIcon = (precip) => {
         const color = getPrecipColor(precip);
         const rounded = Number(precip).toFixed(2);
+        const size = isMobile ? [27.5, 15] : [55, 30];
+        const anchor = isMobile ? [13.5, 7.5] : [27, 15];
+
         return L.divIcon({
             html: `<div class="precip-marker" style="background-color:${color}">${rounded}"</div>`,
             className: "",
-            iconSize: [55, 30],
-            iconAnchor: [27, 15],
+            iconSize: size,
+            iconAnchor: anchor,
         });
     };
 
@@ -615,8 +586,8 @@ const PopulateStations = ({ showSaturation, showPrecip12hr, showLandslideForecas
 const createLandslideIcon = () => {
     return L.icon({
         iconUrl: GreenPinIcon,
-        iconSize: [30, 40],        // Adjust size as needed
-        iconAnchor: [15, 30],      // Bottom center of the icon
+        iconSize: isMobile ? [15, 20] : [30, 40],
+        iconAnchor: isMobile ? [7.5, 15] : [15, 30],
         popupAnchor: [0, -10]      // Popup appears above the pin
     });
 };
@@ -1024,7 +995,7 @@ export default function InteractiveMap() {
     };
 
     // --- MOBILE & LABEL LOGIC (From 'demo2' branch) ---
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     let mapLabelText = "";
 
@@ -1048,9 +1019,12 @@ export default function InteractiveMap() {
                 zoom={isMobile ? 8 : 10}
                 minZoom={7}
                 maxZoom={18}
-                scrollWheelZoom={true}
+                scrollWheelZoom={false}
                 zoomControl={false}
-                style={{ height: '100vh', width: '100%' }}
+                style={{ 
+                    height: isMobile ? 'calc(100svh - 51px - 179px)' : '100vh', 
+                    width: '100%' 
+                }}
             >
                 {mapLabelText && <div className="map-label">{mapLabelText}</div>}
 
@@ -1066,7 +1040,6 @@ export default function InteractiveMap() {
                 )} 
 
                 <CtrlZoomHandler setShowZoomHint={setShowZoomHint} hasShownZoomHint={hasShownZoomHint} />
-                <MobileTouchHandler />
 
                 <MapMenu
                     showStations={showStations} onToggleStations={toggleStations}

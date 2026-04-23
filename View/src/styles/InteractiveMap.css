@@ -190,25 +190,27 @@
 
 .legend-soil-saturation {
   position: absolute;
-  bottom: 60px;
+  bottom: 70px;
   right: 30px;
   width: 150px;
 }
 
 .legend-landslide-susceptibility {
   position: absolute;
-  bottom: 170px; /* Adjust stack height */
+  bottom: calc(70px + 90px + 20px); /* soil saturation bottom + its height + gap */
   right: 30px;
   width: 150px;
 }
 
 .legend-precipitation {
   position: absolute;
-  top: 162px;       /* right below the map menu buttons */
+  bottom: calc(70px + 90px + 10px + 120px + 41px); /* stacked above susceptibility */
   right: 30px;
   max-height: 25vh;
   overflow-y: auto;
   width: 155px;
+  left: auto; /* prevent mobile rule from overriding */
+  top: auto;  /* remove any top positioning */
 }
 
 /* --- Disclaimer --- */
@@ -434,7 +436,7 @@
   .time-control-bar {
     width: 85%;              /* slightly smaller */
     max-width: 300px;        /* tighter container */
-    bottom: 30px;            /* moved UP a bit */
+    bottom: 30px;          /* moved UP a bit */
     padding: 4px 8px;        /* thinner */
     gap: 6px;
     border-radius: 5px;
@@ -472,39 +474,43 @@
   }
 
   /* ---------- LEGENDS (MOBILE FIX) ---------- */
-  .legend-container {
-    transform: scale(0.65); /* 👈 shrink EVERYTHING */
+ .legend-container {
+    transform: scale(0.65);
   }
 
   .legend-title {
-    font-size: 0.6rem; 
+      font-size: 0.6rem;
   }
 
-  /* Stack them vertically on the right */
-  .legend-landslide-susceptibility,
+  /* Soil Saturation — bottom right */
   .legend-soil-saturation {
-    right: 15px !important;
-    width: 130px;
-    transform-origin: bottom right;
-  } 
+      bottom: 70px !important;
+      right: 15px !important;
+      left: auto !important;
+      top: auto !important;
+      width: 130px;
+      transform-origin: bottom right;
+  }
 
-  /* Top legend */
+  /* Susceptibility — stacked above soil saturation on the right */
   .legend-landslide-susceptibility {
-    bottom: 140px !important; /* 👈 sits above */
+      bottom: 150px !important; /* 70px + ~90px height + 10px gap */
+      right: 15px !important;
+      left: auto !important;
+      top: auto !important;
+      width: 130px;
+      transform-origin: bottom right;
   }
 
-  /* Bottom legend */
-  .legend-soil-saturation {
-    bottom: 70px !important;
-  }
-
-  /* Precipitation legend (left side → make smaller + move up) */
+  /* Precipitation — bottom LEFT, same bottom value as soil saturation */
   .legend-precipitation {
-    top: 250px !important;
-    left: 15px !important;
-    width: 130px;
-    max-height: 41.8vh !important;
-    transform-origin: bottom left;
+      bottom: 70px !important;
+      left: 15px !important;
+      right: auto !important;
+      top: auto !important;
+      width: 130px;
+      max-height: 35vh !important;
+      transform-origin: bottom left;
   }
 
   /* ---------- LOGO ---------- */
@@ -529,5 +535,17 @@
     bottom: 150px;
     left: 10px;
     font-size: 1rem;
+  }
+
+  .saturation-marker {
+    width: 27px !important;
+    height: 15px !important;
+    font-size: 7px !important;
+  }
+
+  .precip-marker {
+    width: 27px !important;
+    height: 15px !important;
+    font-size: 7px !important;
   }
 }
